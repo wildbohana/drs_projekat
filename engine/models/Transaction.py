@@ -13,8 +13,8 @@ class TransactionState(Enum):
 class Transaction(db.Model):
     __tablename__ = 'transactions'
     id = db.Column(db.Integer(), primary_key=True)
-    sender = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    receiver = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    sender = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    receiver = db.Column(db.Integer(), db.ForeignKey('users.id'))
     amount = db.Column(db.Integer(), nullable=False)
     state = db.Column(db.Enum(TransactionState), nullable=False)
     timeCreated = db.Column(db.DateTime(), default=text("datetime('now','localtime')"))

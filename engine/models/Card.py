@@ -8,7 +8,7 @@ class Card(db.Model):
     cardDate = db.Column(db.String(length=10), nullable=False)
     cardCvv = db.Column(db.String(3), nullable=False)
     budget = db.Column(db.Integer(), nullable=False, default=1000)
-    owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    owner = db.Column(db.Integer(), db.ForeignKey('users.id'))
 
     def __init__(self, cardNum, cardDate, cardCvv, id=None, budget=1000, owner=-1):
         self.id = id

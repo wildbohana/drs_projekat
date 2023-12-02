@@ -4,7 +4,7 @@ from main import db
 class Product(db.Model):
     __tablename__ = 'products'
     id = db.Column(db.Integer(), primary_key=True)
-    seller = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    seller = db.Column(db.Integer(), db.ForeignKey('users.id'))
     price = db.Column(db.Integer(), nullable=False)
     currency = db.Column(db.String(length=10), nullable=False, default='USD')
     amount = db.Column(db.Float(), nullable=False)

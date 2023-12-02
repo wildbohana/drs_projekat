@@ -27,6 +27,7 @@ if __name__ == "__main__":
 
 
 """
+# Vrv izaziva ciklični import
 from models.User import User
 from models.Card import Card
 from models.Product import Product
