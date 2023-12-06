@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flaskext.mysql import MySQL
 from flask_cors import CORS
+import hashlib
 
 app = Flask(__name__)
 
@@ -23,7 +24,10 @@ ma = Marshmallow(app)
 mysql = MySQL(app)
 CORS(app)
 
+# Dict(Key, value) = token, email
+activeTokens = {}
 
-# LoggedUser čuva email trenutno ulogovanog korisnika
-# TODO pretvoriti to u token (jwt?)
-loggedUser = None
+
+def create_hash(text, end="_anavolimilovana"):
+    hash_text = text + end
+    return hashlib.sha256(hash_text.encode("utf8")).hexdigest()

@@ -2,14 +2,14 @@ from Configuration.config import db
 from marshmallow import Schema, fields
 
 
-# id za karticu je broj karice
+# Card ID == card number
 class CreditCard(db.Model):
     __tablename__ = 'credit_card'
     cardNumber = db.Column(db.String(16), primary_key=True)
     userName = db.Column(db.String(32))
     expirationDate = db.Column(db.String(5))
     cvv = db.Column(db.Integer)
-    amount = db.Column(db.Float)  #količina novca u RSD
+    amount = db.Column(db.Float)  #količina novca u RSD, kasnije promeni
     bankAccountNumber = db.Column(db.String(10))
 
     def __init__(self, cardNumber, userName, expirationDate, cvv, amount, bankAccountNumber):

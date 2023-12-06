@@ -25,3 +25,4 @@ Dodati novu konekciju:
 
 -- Dalje
 Napraviti novu šemu (drs_sema)
+Kada se pokrene projekat, ako je šema prazna automatski se prave tabele

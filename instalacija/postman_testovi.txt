@@ -1,0 +1,35 @@
+[POST] Registracija korisnika
+http://localhost:5000/register
+raw json body:
+{
+    "email": "bojana123@gmail.com",
+    "password": "123",
+    "fisrName": "Bojana",
+    "lastName": "Mihajlovic",
+    "address": "Jug Bogdana 112",
+    "city": "Backa Palanka",
+    "state": "Srbija",
+    "phoneNumber": "123123123"
+}
+
+---
+
+[POST] Prijava korisnika
+http://localhost:5000/login
+raw json body:
+{
+    "email": "bojana123@gmail.com",
+    "password": "123"
+}
+
+-> kopiraj token, trebaće ti dalje
+
+---
+
+[GET] Korisnički profil
+http://localhost:5000/userProfile/<token>
+
+---
+
+[POST] Odjava korisnika
+http://localhost:5000/logout/<token>

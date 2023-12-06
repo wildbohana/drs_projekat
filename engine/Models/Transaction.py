@@ -4,12 +4,12 @@ from Configuration.config import db
 
 class Transaction(db.Model):
     __tablename__ = 'transaction'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True) #
-    sender = db.Column(db.String(64))  #id kupca
-    receiver = db.Column(db.String(64))   #id prodavca
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sender = db.Column(db.String(64))
+    receiver = db.Column(db.String(64))  #admin
     amount = db.Column(db.Float)
     currency = db.Column(db.String(3))
-    state = db.Column(db.String(32))  #stanje (In progress, Approved, Denied)
+    state = db.Column(db.String(32))     #In progress, Approved, Denied
 
     def __init__(self, sender, receiver, amount, currency, state):
         self.sender = sender
