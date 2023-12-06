@@ -1,0 +1,27 @@
+Video za MySQL: https://www.youtube.com/watch?v=U0paw01g_KU
+
+-- WSL
+U BIOS-u uključiti virtualizaciju
+U cmd.exe pokrenuti wsl --install (pokreni cmd kao admin)
+Popuniti username i password i tjt
+Opciono, uraditi sudo apt update && sudo apt upgrade
+
+-- Skinuti docker i instalirati ga
+Ima sve na sajtu bukv
+
+-- MySQL instalacija (powershell)
+// 3306 je docker port, sa 3333 pristupamo mysql
+docker pull mysql
+docker run --name drsdb -e MYSQL_ROOT_PASSWORD=123 -p 3333:3306 -d mysql:latest
+
+-- MySQL workbench 8 instalacija
+Skinuti i instalirati sa sajta
+Dodati novu konekciju:
+ - name: docker-mysql
+ - hostname: 127.0.0.1
+ - port: 3333
+ - user: root
+ - password: 123
+
+-- Dalje
+Napraviti novu šemu (drs_sema)

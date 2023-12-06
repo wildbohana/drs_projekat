@@ -1,7 +1,13 @@
-flask
+flask==2.2.2
+Werkzeug==2.2.2
 flask-sqlalchemy
+sqlalchemy
 flask-login
 flask-cors
 psycopg2-binary
-sqlalchemy
-requests
+flask-restful
+flask-marshmallow
+marshmallow
+marshmallow-sqlalchemy
+mysql-connector-python
+flask-mysql
