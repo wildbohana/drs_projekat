@@ -4,7 +4,7 @@ raw json body:
 {
     "email": "bojana123@gmail.com",
     "password": "123",
-    "fisrName": "Bojana",
+    "firstName": "Bojana",
     "lastName": "Mihajlovic",
     "address": "Jug Bogdana 112",
     "city": "Backa Palanka",
@@ -33,3 +33,21 @@ http://localhost:5000/userProfile/<token>
 
 [POST] Odjava korisnika
 http://localhost:5000/logout/<token>
+
+---
+
+[POST] Dodavanje proizvoda
+http://localhost:5000/addProduct
+raw json body:
+{
+    "name": "Samsung Galaxy S9",
+    "price": "123456",
+    "currency": "RSD",
+    "amount": "10"
+}
+
+---
+
+[GET] Dobavi proizvod
+http://localhost:5000/getProduct/<id>
+
