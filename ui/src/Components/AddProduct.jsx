@@ -14,7 +14,7 @@ export const AddProduct = () => {
 
     const handleAddProduct = async () => {
         try {
-            const response = await axios.post('/register', {
+            const response = await axios.post('/addProduct', {
                 name,
                 price,
                 currency,

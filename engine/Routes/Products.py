@@ -13,7 +13,7 @@ class AddProduct(Resource):
     def post(self):
         try:
             args = addingProductArgs.parse_args()
-            temp = db.session.execute(db.select(Product).filter_by(name=args["name"])).one_or_none()[0]
+            temp = db.session.execute(db.select(Product).filter_by(name=args["name"])).one_or_none()
             if temp:
                 return "Product already exists!", 400
 
