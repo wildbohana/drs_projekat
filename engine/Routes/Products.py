@@ -13,8 +13,8 @@ class AddProduct(Resource):
     def post(self):
         try:
             args = addingProductArgs.parse_args()
-            temp = db.session.execute(db.select(Product).filter_by(name=args["name"])).one_or_none()[0]
-            if temp:
+            temp = db.session.execute(db.select(Product).filter_by(name=args["name"])).one_or_none()
+            if temp is not None:
                 return "Product already exists!", 400
 
             product = Product(name=args['name'], price=args['price'],
@@ -53,5 +53,28 @@ api.add_resource(GetProduct, "/getProduct/<int:id>")
 #endregion
 
 
+#region GET ALL
+class GetAllProducts(Resource):
+    def get(self):
+        try:
+            products = db.session.execute(db.select(Product)).all()
+            if products is None:
+                return "Products don't exist!", 400
+
+            retval = []
+            for prod in products:
+                product_schema = ProductSchema()
+                temp = product_schema.dump(prod[0])
+                print(temp)
+                retval.append(temp)
+
+            return make_response(jsonify(retval), 200)
+        except Exception as e:
+            return "Error: " + str(e), 500
+
+
+api.add_resource(GetAllProducts, "/getAllProducts")
+#endregion
+
+
 #TODO patch (to change amount)
-#TODO getAllProducts

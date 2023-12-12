@@ -51,3 +51,19 @@ raw json body:
 [GET] Dobavi proizvod
 http://localhost:5000/getProduct/<id>
 
+---
+
+[GET] Dobavi sve proizvode
+http://localhost:5000/getAllProducts
+
+---
+
+[POST] Dodaj karticu na nalog
+http://localhost:5000/card/<token>
+raw json body:
+{
+    "cardNumber": "9191919191919191",
+    "expirationDate": "01/25",
+    "cvv": 911,
+    "userName": "Bojana"
+}
