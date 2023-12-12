@@ -12,7 +12,6 @@ export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
 
     const navigate = useNavigate();
 
@@ -33,51 +32,51 @@ export const Register = () => {
             console.log(successMessage);
 
             setErrorMessage('');
-            setSuccessMessage(successMessage);
 
         } catch (error) {
             console.error('Registration failed:', error.response ? error.response.data : error.message);
-            setSuccessMessage('');
             setErrorMessage('Registration failed. Please check your details and try again.');
         }
     };
 
-    const handleLoginClick = () => {
-        navigate('/');
+    const handleRegisterClick = () => {
+        navigate('/home');
     }
 
     return (
-        <div>
-            <h1>Register</h1>
-            <label>First Name:</label>
-            <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-            <br />
-            <label>Last Name:</label>
-            <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-            <br />
-            <label>Address:</label>
-            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
-            <br />
-            <label>City:</label>
-            <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
-            <br />
-            <label>State:</label>
-            <input type="text" value={state} onChange={(e) => setState(e.target.value)} />
-            <br />
-            <label>Phone number:</label>
-            <input type="number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-            <br />
-            <label>Email:</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <br />
-            <label>Password:</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <br />
-            <button onClick={() => { handleRegister(); handleLoginClick(); }}>Register</button>
-
-            {successMessage && <p style={{ color: 'green' }} > {successMessage}</p>}
-            {errorMessage && <p style={{ color: 'red' }} > {errorMessage}</p>}
-            <button onClick={handleLoginClick}>Back</button>
+        <div className='container'>
+            <div className='register form'>
+                <h1>Register</h1>
+                <form>
+                    <input type="text" className="form-input" placeholder='Enter your first name' value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                    <br />
+                    <input type="text" className="form-input" placeholder='Enter your last name' value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                    <br />
+                    <input type="text" className="form-input" placeholder='Enter your address' value={address} onChange={(e) => setAddress(e.target.value)} />
+                    <br />
+                    <input type="text" className="form-input" placeholder='Enter your city' value={city} onChange={(e) => setCity(e.target.value)} />
+                    <br />
+                    <input type="text" className="form-input" placeholder='Enter your state' value={state} onChange={(e) => setState(e.target.value)} />
+                    <br />
+                    <input type="number" className="form-input" placeholder='Enter your phone number' value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                    <br />
+                    <input type="email" className="form-input" placeholder='Enter your email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <br />
+                    <input type="password" className="form-input" placeholder='Enter your password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <br />
+                    <button className='button' onClick={(e) => {
+                        e.preventDefault();
+                        if (firstName.trim() === '' || lastName.trim() === '' || address.trim() === '' || city.trim() === '' || state.trim() === '' || phoneNumber.trim() === '' || email.trim() === '' || password.trim() === '') {
+                            setErrorMessage('Please fill input fields!');
+                        } else {
+                            handleRegister();
+                            handleRegisterClick();
+                            setErrorMessage('');
+                        }
+                    }}>Register</button>
+                    {errorMessage && <p style={{ color: 'red', textAlign: 'center', marginBottom: 20 }} > {errorMessage}</p>}
+                </form>
+            </div>
         </div>
     );
 };
