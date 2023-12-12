@@ -9,7 +9,7 @@ class CreditCard(db.Model):
     userName = db.Column(db.String(32))
     expirationDate = db.Column(db.String(5))
     cvv = db.Column(db.Integer)
-    amount = db.Column(db.Float)  #količina novca u RSD, kasnije promeni
+    amount = db.Column(db.Float)  #amount of money in RSD
     bankAccountNumber = db.Column(db.String(10))
 
     def __init__(self, cardNumber, userName, expirationDate, cvv, amount, bankAccountNumber):
