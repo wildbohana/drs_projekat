@@ -8,6 +8,7 @@ cardArgs = reqparse.RequestParser()
 cardArgs.add_argument("cardNumber", type=str, help="Card Number is required", required=True)
 cardArgs.add_argument("expirationDate", type=str, help="Date is required", required=True)
 cardArgs.add_argument("cvv", type=int, help="CVV is required", required=True)
+cardArgs.add_argument("amount", type=float, help="Amount in RSD is required", required=True)
 cardArgs.add_argument("userName", type=str, help="Name and surname are required", required=True)
 
 
@@ -18,6 +19,7 @@ class Card(Resource):
         cardNumber = args['cardNumber']
         expirationDate = args['expirationDate']
         cvv = args['cvv']
+        amount = args['amount']
         userName = args['userName']
 
         try:
@@ -31,7 +33,7 @@ class Card(Resource):
                 return "You already have a credit card", 400
 
             # Create the credit card
-            card = CreditCard(cardNumber, userName, expirationDate, cvv, account[0].accountNumber)
+            card = CreditCard(cardNumber, userName, expirationDate, cvv, amount, account[0].accountNumber)
             db.session.add(card)
             db.session.commit()
 
@@ -39,7 +41,7 @@ class Card(Resource):
             account[0].verified = True
             account[0].cardNumber = cardNumber
 
-            # Create balance in RSD for this account
+            # Create balance in RSD for this account (initially 0)
             db.session.add(Balance(account[0].accountNumber, 0, "RSD"))
             db.session.commit()
             return "OK", 200

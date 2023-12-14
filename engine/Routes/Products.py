@@ -32,10 +32,6 @@ api.add_resource(AddProduct, "/addProduct")
 
 
 #region GET PRODUCT
-getProductArgs = reqparse.RequestParser()
-getProductArgs.add_argument("id", type=int, help="Product ID is required", required=True)
-
-
 class GetProduct(Resource):
     def get(self, id):
         try:
