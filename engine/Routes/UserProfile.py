@@ -20,9 +20,9 @@ class UserProfile(Resource):
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
 
-            user = db.session.execute(db.select(User).filter_by(email=activeTokens[token])).one_or_none()[0]
+            user = db.session.execute(db.select(User).filter_by(email=activeTokens[token])).one_or_none()
             user_schema = UserSchema()
-            result = user_schema.dump(user)
+            result = user_schema.dump(user[0])
             result.pop('password')
             return make_response(jsonify(result), 200)
         except Exception as e:
@@ -34,31 +34,33 @@ class UserProfile(Resource):
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
 
-            account = db.session.execute(db.select(User).filter_by(email=activeTokens[token])).one_or_none()[0]
-            if not account:
+            # TODO izmeni ovo sa [0]
+            account = db.session.execute(db.select(User).filter_by(email=activeTokens[token])).one_or_none()
+            if account is None:
                 return "User with this email doesn't exist", 404
 
             if args['firstName']:
-                account.firstName = args['firstName']
+                account[0].firstName = args['firstName']
             if args['lastName']:
-                account.lastName = args['lastName']
+                account[0].lastName = args['lastName']
             if args['email']:
-                account.email = args['email']
+                account[0].email = args['email']
             if args['address']:
-                account.address = args['address']
+                account[0].address = args['address']
             if args['city']:
-                account.city = args['city']
+                account[0].city = args['city']
             if args['state']:
-                account.city = args['state']
+                account[0].city = args['state']
             if args['phoneNumber']:
-                account.phoneNumber = args['phoneNumber']
+                account[0].phoneNumber = args['phoneNumber']
             if args['password']:
-                account.password = args['password']
+                account[0].password = args['password']
 
             db.session.commit()
+            activeTokens[token] = account[0].email
+
             user_schema = UserSchema()
-            result = user_schema.dump(account)
-            activeTokens[token] = account.email
+            result = user_schema.dump(account[0])
             return make_response(jsonify(result), 200)
         except Exception as e:
             return "Error: " + str(e), 500

@@ -3,6 +3,7 @@ from Configuration.config import api, db, reqparse, Resource, jsonify, make_resp
 from datetime import datetime
 
 
+#TODO slanje mejla administratoru kada se novi korisnik registruje
 #region REGISTER
 userRegistrationArgs = reqparse.RequestParser()
 userRegistrationArgs.add_argument("firstName", type=str, help="First name is required", required=True)
@@ -20,7 +21,7 @@ class Register(Resource):
         try:
             args = userRegistrationArgs.parse_args()
             temp = db.session.execute(db.select(User).filter_by(email=args["email"])).one_or_none()
-            if temp:
+            if temp is not None:
                 return "Email is taken!", 400
 
             password = create_hash(args["password"])
@@ -28,6 +29,7 @@ class Register(Resource):
                         address=args['address'], city=args['city'],
                         state=args['state'], phoneNumber=args['phoneNumber'],
                         email=args['email'], password=password, verified=False)
+
             db.session.add(user)
             db.session.commit()
             return "New user has been created!", 200
@@ -50,12 +52,12 @@ class Login(Resource):
     def post(self):
         args = userLoginArgs.parse_args()
         try:
-            temp = db.session.execute(db.select(User).filter_by(email=args["email"])).one_or_none()[0]
-            if not temp:
+            temp = db.session.execute(db.select(User).filter_by(email=args["email"])).one_or_none()
+            if temp is None:
                 return "User doesnt exist!", 400
 
             password = create_hash(args['password'])
-            if (temp.password != password):
+            if temp[0].password != password:
                 return "Invalid password", 400
 
             if args["email"] in activeTokens.values():

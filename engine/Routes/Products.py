@@ -1,6 +1,7 @@
 from Models.Product import Product, ProductSchema
 from Configuration.config import api, db, reqparse, Resource, activeTokens, create_hash, jsonify, make_response
 
+
 #region ADD NEW PRODUCT
 addingProductArgs = reqparse.RequestParser()
 addingProductArgs.add_argument("name", type=str, help="Product name is required", required=True)
@@ -38,12 +39,12 @@ getProductArgs.add_argument("id", type=int, help="Product ID is required", requi
 class GetProduct(Resource):
     def get(self, id):
         try:
-            temp = db.session.execute(db.select(Product).filter_by(id=id)).one_or_none()[0]
-            if not temp:
+            temp = db.session.execute(db.select(Product).filter_by(id=id)).one_or_none()
+            if temp is None:
                 return "Product doesn't exist!", 400
+
             product_schema = ProductSchema()
-            result = product_schema.dump(temp)
-            #result.pop('id')
+            result = product_schema.dump(temp[0])
             return make_response(jsonify(result), 200)
         except Exception as e:
             return "Error: " + str(e), 500
@@ -77,4 +78,30 @@ api.add_resource(GetAllProducts, "/getAllProducts")
 #endregion
 
 
-#TODO patch (to change amount)
+#region CHANGE AMOUNT
+changeAmountArgs = reqparse.RequestParser()
+changeAmountArgs.add_argument("amount", type=float, help="Amount is required", required=True)
+
+
+class ChangeAmount(Resource):
+    def patch(self, id):
+        try:
+            args = changeAmountArgs.parse_args()
+            product = db.session.execute(db.select(Product).filter_by(id=id)).one_or_none()
+            if product is None:
+                return "Product doesn't exist!", 400
+
+            product[0].amount = args['amount']
+            db.session.commit()
+
+            #product_schema = ProductSchema()
+            #result = product_schema.dump(product[0])
+            #return make_response(jsonify(result), 200)
+
+            return "Product amount has been updated!", 200
+        except Exception as e:
+            return "Error: " + str(e), 500
+
+
+api.add_resource(ChangeAmount, "/changeAmount/<int:id>")
+#endregion

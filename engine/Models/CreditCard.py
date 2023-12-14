@@ -9,15 +9,13 @@ class CreditCard(db.Model):
     userName = db.Column(db.String(32))
     expirationDate = db.Column(db.String(5))
     cvv = db.Column(db.Integer)
-    amount = db.Column(db.Float)  #amount of money in RSD
     bankAccountNumber = db.Column(db.String(10))
 
-    def __init__(self, cardNumber, userName, expirationDate, cvv, amount, bankAccountNumber):
+    def __init__(self, cardNumber, userName, expirationDate, cvv, bankAccountNumber):
         self.cardNumber = cardNumber
         self.userName = userName
         self.expirationDate = expirationDate
         self.cvv = cvv
-        self.amount = amount
         self.bankAccountNumber = bankAccountNumber
 
 
@@ -26,5 +24,4 @@ class CreditCardSchema(Schema):
     userName = fields.Str()
     expirationDate = fields.Str()
     cvv = fields.Number()
-    amount = fields.Float()
     bankAccountNumber = fields.Str()

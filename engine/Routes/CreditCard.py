@@ -1,8 +1,9 @@
 from Configuration.config import *
 from flask_restful import Resource
 from Models.__init__ import CreditCard, User, Balance
-from Configuration.exchange import exchangeMoney
 
+
+#TODO administrator treba da odobri dodavanje kartice na nalog (ovo na frontu?)
 cardArgs = reqparse.RequestParser()
 cardArgs.add_argument("cardNumber", type=str, help="Card Number is required", required=True)
 cardArgs.add_argument("expirationDate", type=str, help="Date is required", required=True)
@@ -14,9 +15,10 @@ cardArgs.add_argument("userName", type=str, help="Name and surname are required"
 class Card(Resource):
     def post(self, token):
         args = cardArgs.parse_args()
-        cardNumber, expirationDate, cvv, userName = (args['cardNumber'], args['expirationDate'],
-                                                     args['cvv'], args['userName'])
-        USDInRSD = exchangeMoney(1, "USD", "RSD")
+        cardNumber = args['cardNumber']
+        expirationDate = args['expirationDate']
+        cvv = args['cvv']
+        userName = args['userName']
 
         try:
             if token not in activeTokens.keys():
@@ -24,25 +26,21 @@ class Card(Resource):
             email = activeTokens[token]
 
             # Get info on currently logged in account
-            account = db.session.execute(db.select(User).filter_by(email=email)).one_or_none()[0]
-            if account.cardNumber is not None:
+            account = db.session.execute(db.select(User).filter_by(email=email)).one_or_none()
+            if account[0].cardNumber is not None:
                 return "You already have a credit card", 400
 
-            # Find the credit card
-            card = db.session.execute(db.select(CreditCard).filter_by(
-                cardNumber=cardNumber, expirationDate=expirationDate,
-                cvv=cvv, userName=userName)).one_or_none()
-            # Ovo sa [0] radi kada ima nečega, a ne radi kada nema ničega
+            # Create the credit card
+            card = CreditCard(cardNumber, userName, expirationDate, cvv, account[0].accountNumber)
+            db.session.add(card)
+            db.session.commit()
 
-            if not card:
-                return "Card does not exist", 404
-            if card.amount < USDInRSD:
-                return "You don't have enough money on your card", 400
+            # Verify account
+            account[0].verified = True
+            account[0].cardNumber = cardNumber
 
-            card.amount -= USDInRSD
-            account.verified = True
-            account.cardNumber = cardNumber
-            db.session.add(Balance(account.accountNumber, 0, "RSD"))
+            # Create balance in RSD for this account
+            db.session.add(Balance(account[0].accountNumber, 0, "RSD"))
             db.session.commit()
             return "OK", 200
         except Exception as e:

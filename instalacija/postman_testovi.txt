@@ -49,16 +49,11 @@ raw json body:
 ---
 
 [GET] Dobavi proizvod
-http://localhost:5000/getProduct/<id>
+http://localhost:5000/changeAmount/<id>
 
 ---
 
-[GET] Dobavi sve proizvode
-http://localhost:5000/getAllProducts
-
----
-
-[POST] Dodaj karticu na nalog
+[POST] Dodaj karticu na nalog (verifikacija)
 http://localhost:5000/card/<token>
 raw json body:
 {
