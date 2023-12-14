@@ -49,7 +49,21 @@ raw json body:
 ---
 
 [GET] Dobavi proizvod
-http://localhost:5000/changeAmount/<id>
+http://localhost:5000/getProduct/<id_proizvoda>
+
+---
+
+[GET] Dobavi sve proizvode
+http://localhost:5000/getAllProducts
+
+---
+
+[PATCH] Promeni količnu proizvoda
+http://localhost:5000/changeAmount/<id_proizvoda>
+raw json body:
+{
+    "amount": "20"
+}
 
 ---
 
@@ -60,5 +74,44 @@ raw json body:
     "cardNumber": "9191919191919191",
     "expirationDate": "01/25",
     "cvv": 911,
+    "amount": "25000",
     "userName": "Bojana"
+}
+
+---
+
+[GET] Dobavi sve račune u svim valutama
+http://localhost:5000/accountBalance/<token>
+
+---
+
+[POST] Uplati novac sa kartice na račun u izabranoj valuti
+http://localhost:5000/accountBalance/<token>
+raw json body:
+{
+    "amount": "20",
+    "currency": "EUR"
+}
+
+---
+
+[GET] Proveri odnos u kursu
+http://localhost:5000/exchange/<token>
+raw json body:
+{
+    "oldCurrency": "EUR",
+    "newCurrency": "RSD",
+    "oldValue": 100
+}
+
+
+---
+
+[POST] Prebaci novac sa računa iz jedne valute u drugu 
+http://localhost:5000/exchange/<token>
+raw json body:
+{
+    "oldCurrency": "USD",
+    "newCurrency": "RSD",
+    "oldValue": 10
 }
