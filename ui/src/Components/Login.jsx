@@ -17,10 +17,11 @@ export const Login = () => {
             });
 
             const { token } = response.data;
-            console.log('Token', token);
+            localStorage.setItem('userToken', token);
+
             setErrorMessage('');
             handleLoginSuccessfulClick();
-
+            window.alert('Login successful!');
         } catch (error) {
             console.error('Login failed:', error.response ? error.response.data : error.message);
             setErrorMessage('Login failed. Please check your credentials.');

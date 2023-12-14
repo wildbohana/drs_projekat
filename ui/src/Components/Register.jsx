@@ -32,15 +32,16 @@ export const Register = () => {
             console.log(successMessage);
 
             setErrorMessage('');
-
+            window.alert('Registration successful!');
         } catch (error) {
             console.error('Registration failed:', error.response ? error.response.data : error.message);
             setErrorMessage('Registration failed. Please check your details and try again.');
         }
     };
 
+
     const handleRegisterClick = () => {
-        navigate('/home');
+        navigate('/');
     }
 
     return (

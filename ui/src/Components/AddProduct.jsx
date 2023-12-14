@@ -8,7 +8,6 @@ export const AddProduct = () => {
     const [currency, setCurrency] = useState('');
     const [amount, setAmount] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
 
     const navigate = useNavigate();
 
@@ -23,13 +22,10 @@ export const AddProduct = () => {
 
             const successMessage = response.data;
             console.log(successMessage);
-
             setErrorMessage('');
-            setSuccessMessage(successMessage);
 
         } catch (error) {
             console.error('Adding product failed:', error.response ? error.response.data : error.message);
-            setSuccessMessage('');
             setErrorMessage('Adding product failed. Please check your details and try again.');
         }
     };
@@ -43,26 +39,27 @@ export const AddProduct = () => {
     };
 
     return (
-        <div>
-            <h1>Register</h1>
-            <label>Name:</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-            <br />
-            <label>Price:</label>
-            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
-            <br />
-            <label>Currency:</label>
-            <input type="text" value={currency} onChange={(e) => setCurrency(e.target.value)} />
-            <br />
-            <label>Amount:</label>
-            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
-            <br />
-            <br />
-            <button onClick={() => { handleAddProduct(); handleAddProductClick(); }}>Add product</button>
-
-            {successMessage && <p style={{ color: 'green' }} > {successMessage}</p>}
-            {errorMessage && <p style={{ color: 'red' }} > {errorMessage}</p>}
-            <button onClick={handleBackClick}>Back</button>
+        <div className='container'>
+            <div className='product form'>
+                <h1>Create product</h1>
+                <input type="text" placeholder="Product name" className="form-input" value={name} onChange={(e) => setName(e.target.value)} />
+                <input type="number" placeholder='Product price' className="form-input" value={price} onChange={(e) => setPrice(e.target.value)} />
+                <input type="text" placeholder='Product currency' className="form-input" value={currency} onChange={(e) => setCurrency(e.target.value)} />
+                <input type="number" placeholder='Product amount' className="form-input" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                <button className='button' onClick={(e) => {
+                    e.preventDefault();
+                    if (name.trim() === '' || price.trim() === '' || currency.trim() === '' || amount.trim() === '') {
+                        setErrorMessage('Please fill input fields!');
+                    } else {
+                        handleAddProduct();
+                        handleAddProductClick();
+                        window.alert('Successfully created product');
+                        setErrorMessage('');
+                    }
+                }}>Submit</button>
+                <button className='button' onClick={handleBackClick}>Back</button>
+                {errorMessage && <p style={{ color: 'red', textAlign: 'center', marginBottom: 20 }} > {errorMessage}</p>}
+            </div>
         </div>
     );
 };

@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Home.css'
 
 export const Home = () => {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState('');
-    const [productId] = useState(1);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get(`/getProduct/${productId}`);
+                const response = await axios.get('/getAllProducts');
 
-                if (response.data && typeof response.data === 'object') {
-
-                    setProducts([response.data]);
+                if (response.data && Array.isArray(response.data)) {
+                    setProducts(response.data);
                     setError('');
                 } else {
                     setError('Invalid response format. Please try again later.');
@@ -27,39 +26,78 @@ export const Home = () => {
             }
         };
         fetchProducts();
-    }, [productId]);
+    }, []);
     const handleNewProduct = () => {
         navigate('/addProduct');
     }
 
+    const handleLogout = async () => {
+        try {
+            const userToken = localStorage.getItem('userToken');
+
+            if (!userToken) {
+                console.log('User token not found!');
+                return;
+            }
+
+            await axios.post(`/logout/${userToken}`);
+            localStorage.removeItem('userToken');
+            navigate('/');
+        } catch (error) {
+            console.error('Error during logout: ', error.response ? error.response.data : error.message);
+            setError('ErrorDuring logout. Please try again later');
+        }
+    }
+
+    const handleAmountChange = async (productId, newAmount) => {
+        try {
+            const response = await axios.patch(`/changeAmount/${productId}`, {
+                amount: newAmount
+            });
+            console.log(response.data);
+            setProducts(prevProducts => prevProducts.map(product => product.id === productId ? { ...product, amount: newAmount } : product));
+            setError('');
+        } catch (error) {
+            console.error('Error updationg product amount:', error.response ? error.response.data : error.message);
+            setError('Error during update amount');
+        }
+    };
 
     return (
-        <div>
-            <h2>Product List</h2>
-            <table border="1">
+        <div className="homeContainer">
+
+            <table className='productTable'>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Currency</th>
+                        <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     {products.map(product => (
                         <tr key={product.id}>
-                            <td>{product.id}</td>
                             <td>{product.name}</td>
                             <td>{product.price}</td>
                             <td>{product.currency}</td>
+                            <td>
+                                <input style={{ width: 100 }}
+                                    type="number"
+                                    value={product.amount}
+                                    onChange={(e) => handleAmountChange(product.id, e.target.value)}
+                                />
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            {error && <p>{error}</p>}
-            <button onClick={handleNewProduct}>Add new product</button>
+            {error && <p style={{ color: 'red', marginBottom: 20 }}>{error}</p>}
+            <div className='divHomeButtons'>
+                <button className='homeButton' onClick={handleNewProduct}>Add new</button>
+                <button className='homeButton' onClick={handleLogout}>Logout</button>
+            </div>
         </div>
-
     );
 };
 
