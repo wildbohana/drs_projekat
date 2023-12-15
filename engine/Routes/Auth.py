@@ -1,6 +1,8 @@
 from Models.User import User
 from Configuration.config import api, db, reqparse, Resource, jsonify, make_response, activeTokens, create_hash
 from datetime import datetime
+from Processes.__init__ import openProcess, closeProcess
+from flask import request
 
 
 #TODO slanje mejla administratoru kada se novi korisnik registruje
@@ -69,6 +71,9 @@ class Login(Resource):
             token = create_hash(args['email'], str(datetime.now().timestamp()))
             activeTokens[token] = args['email']
 
+            # For processing
+            openProcess(token, request.remote_addr)
+
             return make_response(jsonify({"token": token}), 200)
         except Exception as e:
             return "Error:" + str(e), 500
@@ -82,6 +87,7 @@ api.add_resource(Login, "/login")
 class Logout(Resource):
     def post(self, token):
         try:
+            closeProcess(token)
             activeTokens.pop(token)
             return "OK", 200
         except Exception as e:

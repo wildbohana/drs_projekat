@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flaskext.mysql import MySQL
 from flask_cors import CORS
-import hashlib
+import hashlib, socket
 
 app = Flask(__name__)
 
@@ -27,7 +27,11 @@ CORS(app)
 # Dict(Key, value) = token, email
 activeTokens = {}
 
+# For processes
+sendingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+
+# Hash for token
 def create_hash(text, end="_anavolimilovana"):
     hash_text = text + end
     return hashlib.sha256(hash_text.encode("utf8")).hexdigest()
