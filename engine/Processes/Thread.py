@@ -7,21 +7,11 @@ from threading import Lock
 
 
 mutex = Lock()
+# TODO: dodaj red za odobravanje transakcija koji svakih 60s obavi sve transakcije
 
-#addTransaction(token, (email, receiverEmail, args['amount'], args['currency'], args['product']))
 
 # Thread that processes transactions
-def threadWorker(email, receiver, amount, currency, client_id, product):
-    def addTransaction(sender, receiver, amount, currency, state, product):
-        # Flask app -> app_context()
-        print("HI from threadWorker")  # OVO radi
-        with app.app_context():
-            transaction = Transaction(sender, receiver, amount, currency, state, product)
-            db.session.add(transaction)
-            db.session.commit()
-        print("DONE")   # Ovo ne radi
-        return transaction
-
+def threadWorker(email, receiver, amount, currency, product, client_id):
     def changeTransactionState(transaction, state):
         if not transaction:
             return
@@ -40,9 +30,11 @@ def threadWorker(email, receiver, amount, currency, client_id, product):
     transaction = None
     try:
         print("Starting thread...", sys.stderr)
-        # Ode u funkciju i ne završi je
-        transaction = addTransaction(email, receiver, amount, currency, "Processing", product)
-        #sleep(10)   # 10 seconds
+        with app.app_context():
+            transaction = Transaction(email, receiver, amount, currency, "Processing", product)
+            db.session.add(transaction)
+            db.session.commit()
+        #sleep(60)   # 60 seconds
 
         print("Starting money exchange...", sys.stderr)
         with app.app_context():

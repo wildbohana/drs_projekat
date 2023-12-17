@@ -57,5 +57,6 @@ class TransactionProfile(Resource):
 
 api.add_resource(TransactionProfile, "/transaction/<string:token>")
 
-#TODO get-all chronologically (for admin)
-#TODO every 60s process all transactions (from processing to approved)
+
+# TODO get-all chronologically (for admin)
+# (već je hronološki zbog ID, samo mu vrati listu svih koji su "Approved")

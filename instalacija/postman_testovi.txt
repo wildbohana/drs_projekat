@@ -115,3 +115,19 @@ raw json body:
     "newCurrency": "RSD",
     "oldValue": 10
 }
+
+---
+
+[GET] Dobavi sve odobrene transakcije za korisnika
+http://localhost:5000/transaction/<token>
+
+---
+
+[POST] Kupi proizvod (napravi transakciju)
+http://localhost:5000/transaction/<token>
+raw json body:
+{
+    "amount": "1",
+    "currency": "EUR",
+    "product": "3"
+}
