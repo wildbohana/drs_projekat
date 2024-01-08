@@ -34,7 +34,7 @@ def threadWorker(email, receiver, amount, currency, product, client_id):
             transaction = Transaction(email, receiver, amount, currency, "Processing", product)
             db.session.add(transaction)
             db.session.commit()
-        #sleep(60)   # 60 seconds
+            #sleep(60)    #60 seconds
 
         print("Starting money exchange...", sys.stderr)
         with app.app_context():

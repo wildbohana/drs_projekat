@@ -60,3 +60,31 @@ api.add_resource(TransactionProfile, "/transaction/<string:token>")
 
 # TODO get-all chronologically (for admin)
 # (već je hronološki zbog ID, samo mu vrati listu svih koji su "Approved")
+
+
+#vraca istoriju izvrsenih transakcija administratoru
+class TransactionHistory(Resource):
+    def get(self, token):
+        try:
+            if token not in activeTokens.keys():
+                return "Please login to continue.", 400
+            email = activeTokens[token]
+
+            transactionHistory = db.session.execute(
+                db.select(Transaction).filter_by(state="Approved")).all()
+
+            if len(transactionHistory) == 0:
+                return "There are no transactions", 200
+
+
+            list = []
+            for transaction in transactionHistory:
+                transaction_schema = TransactionSchema()
+                result = transaction_schema.dump(transaction[0])
+                list.append(result)
+            return make_response(jsonify(list), 200)
+
+        except Exception as e:
+            return 'Error: ' + str(e), 500
+
+api.add_resource(TransactionHistory, "/transactionHistory/<string:token>")

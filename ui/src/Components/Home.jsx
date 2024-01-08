@@ -63,6 +63,9 @@ export const Home = () => {
         }
     };
 
+    
+    
+
     return (
         <div className="homeContainer">
 
@@ -73,6 +76,7 @@ export const Home = () => {
                         <th>Price</th>
                         <th>Currency</th>
                         <th>Amount</th>
+                        <th>Action</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -88,6 +92,7 @@ export const Home = () => {
                                     onChange={(e) => handleAmountChange(product.id, e.target.value)}
                                 />
                             </td>
+                            
                         </tr>
                     ))}
                 </tbody>
