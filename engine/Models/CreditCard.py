@@ -11,6 +11,8 @@ class CreditCard(db.Model):
     cvv = db.Column(db.Integer)
     amount = db.Column(db.Float)    #Amount of money in RSD
     bankAccountNumber = db.Column(db.String(10))
+    verified = db.Column(db.Boolean, default=False)
+
 
     def __init__(self, cardNumber, userName, expirationDate, cvv, amount, bankAccountNumber):
         self.cardNumber = cardNumber
@@ -19,6 +21,7 @@ class CreditCard(db.Model):
         self.cvv = cvv
         self.amount = amount
         self.bankAccountNumber = bankAccountNumber
+        self.verified = False
 
 
 class CreditCardSchema(Schema):
@@ -28,3 +31,4 @@ class CreditCardSchema(Schema):
     cvv = fields.Number()
     amount = fields.Float()
     bankAccountNumber = fields.Str()
+    verified = fields.Boolean()

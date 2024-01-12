@@ -9,6 +9,7 @@ transactionArgs.add_argument("amount", type=float, help="Amount can't be 0 and i
 transactionArgs.add_argument("currency", type=str, help="Currency is required", required=True)
 transactionArgs.add_argument("product", type=int, help="Product ID is required", required=True)
 
+
 # Get transaction - returns history of transactions for user
 # Post transaction - makes new transaction (buys product)
 class TransactionData(Resource):
@@ -20,11 +21,11 @@ class TransactionData(Resource):
 
             # transactionSender - all users
             # transactionReceiver - only admin
-            transactionSender = db.session.execute(db.select(Transaction).filter_by(sender=email)).all()
-            transactionReceiver = db.session.execute(
+            transaction_sender = db.session.execute(db.select(Transaction).filter_by(sender=email)).all()
+            transaction_receiver = db.session.execute(
                 db.select(Transaction).filter_by(receiver=email, state="Approved")).all()
 
-            transactions = transactionSender + transactionReceiver
+            transactions = transaction_sender + transaction_receiver
             if len(transactions) == 0:
                 return "There are no transactions", 200
 
@@ -40,7 +41,7 @@ class TransactionData(Resource):
     def post(self, token):
         try:
             args = transactionArgs.parse_args()
-            receiverEmail = "drs.projekat.tim12@gmail.com"
+            receiver_email = "drs.projekat.tim12@gmail.com"
 
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
@@ -49,12 +50,12 @@ class TransactionData(Resource):
             if args["amount"] <= 0:
                 return "Amount must be greater than 0", 400
 
-            # TODO add transaction to queue
-            #new_trans = Transaction(email, receiverEmail, args['amount'], args['currency'], args['product'])
-            #transaction_queue.append(new_trans)
+            # Add transaction to queue
+            new_trans = Transaction(email, receiver_email, args['amount'], args['currency'], "Processing", args['product'])
+            transaction_queue.append(new_trans)
 
             # TODO change
-            addTransaction(token, (email, receiverEmail, args['amount'], args['currency'], args['product']))
+            addTransaction(token, (email, receiver_email, args['amount'], args['currency'], args['product']))
             return "OK", 200
         except Exception as e:
             return 'Error: ' + str(e), 500
@@ -63,18 +64,17 @@ class TransactionData(Resource):
 api.add_resource(TransactionData, "/transaction/<string:token>")
 
 
-# For Admin - returns transactions from all users
+# For Admin - returns all transactions from all users
 class TransactionHistory(Resource):
     def get(self, token):
         try:
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
 
-            transaction_history = db.session.execute(
-                db.select(Transaction).filter_by(state="Approved")).all()
+            transaction_history = db.session.execute(db.select(Transaction)).all()
 
             if len(transaction_history) == 0:
-                return "There are no approved transactions", 200
+                return "There are no transactions", 200
 
             list = []
             for transaction in transaction_history:
@@ -82,7 +82,8 @@ class TransactionHistory(Resource):
                 result = transaction_schema.dump(transaction[0])
                 list.append(result)
 
-            list.reverse()      # Most recent first
+            # Most recent first (bigger ID)
+            list.reverse()
             return make_response(jsonify(list), 200)
 
         except Exception as e:

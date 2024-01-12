@@ -6,8 +6,6 @@ from Processes.__init__ import openProcess, closeProcess
 from flask import request
 
 
-#TODO slanje mejla administratoru kada se novi korisnik registruje
-#region REGISTER
 userRegistrationArgs = reqparse.RequestParser()
 userRegistrationArgs.add_argument("firstName", type=str, help="First name is required", required=True)
 userRegistrationArgs.add_argument("lastName", type=str, help="Last name is required", required=True)
@@ -50,10 +48,8 @@ class Register(Resource):
 
 
 api.add_resource(Register, "/register")
-#endregion
 
 
-#region LOGIN
 userLoginArgs = reqparse.RequestParser()
 userLoginArgs.add_argument("email", type=str, help="Email is required", required=True)
 userLoginArgs.add_argument("password", type=str, help="Password is required", required=True)
@@ -90,10 +86,8 @@ class Login(Resource):
 
 
 api.add_resource(Login, "/login")
-#endregion
 
 
-#region LOGOUT
 class Logout(Resource):
     def post(self, token):
         try:
@@ -105,4 +99,3 @@ class Logout(Resource):
 
 
 api.add_resource(Logout, "/logout/<string:token>")
-#endregion

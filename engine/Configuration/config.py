@@ -23,7 +23,7 @@ api = Api(app)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 mysql = MySQL(app)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # Dict(Key, value) = token, email
 activeTokens = {}

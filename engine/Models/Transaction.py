@@ -12,7 +12,7 @@ class Transaction(db.Model):
     state = db.Column(db.String(32))     # Processing, Approved, Denied
     product = db.Column(db.Integer)      # Product ID
 
-    def __init__(self, sender, receiver, amount, currency, state, product):
+    def __init__(self, sender: object, receiver: object, amount: object, currency: object, state: object, product: object) -> object:
         self.sender = sender
         self.receiver = receiver
         self.amount = amount

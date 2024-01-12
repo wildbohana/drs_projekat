@@ -2,7 +2,6 @@ from Models.Product import Product, ProductSchema
 from Configuration.config import api, db, reqparse, Resource, activeTokens, create_hash, jsonify, make_response
 
 
-#region ADD NEW PRODUCT
 addingProductArgs = reqparse.RequestParser()
 addingProductArgs.add_argument("name", type=str, help="Product name is required", required=True)
 addingProductArgs.add_argument("price", type=float, help="Product price is required", required=True)
@@ -28,10 +27,8 @@ class AddProduct(Resource):
 
 
 api.add_resource(AddProduct, "/addProduct")
-#endregion
 
 
-#region GET PRODUCT
 class GetProduct(Resource):
     def get(self, id):
         try:
@@ -47,10 +44,8 @@ class GetProduct(Resource):
 
 
 api.add_resource(GetProduct, "/getProduct/<int:id>")
-#endregion
 
 
-#region GET ALL
 class GetAllProducts(Resource):
     def get(self):
         try:
@@ -71,10 +66,8 @@ class GetAllProducts(Resource):
 
 
 api.add_resource(GetAllProducts, "/getAllProducts")
-#endregion
 
 
-#region CHANGE AMOUNT
 changeAmountArgs = reqparse.RequestParser()
 changeAmountArgs.add_argument("amount", type=float, help="Amount is required", required=True)
 
@@ -90,14 +83,9 @@ class ChangeAmount(Resource):
             product[0].amount = args['amount']
             db.session.commit()
 
-            #product_schema = ProductSchema()
-            #result = product_schema.dump(product[0])
-            #return make_response(jsonify(result), 200)
-
             return "Product amount has been updated!", 200
         except Exception as e:
             return "Error: " + str(e), 500
 
 
 api.add_resource(ChangeAmount, "/changeAmount/<int:id>")
-#endregion

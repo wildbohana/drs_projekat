@@ -72,7 +72,7 @@ http://localhost:5000/card/<token>
 raw json body:
 {
     "cardNumber": "9191919191919191",
-    "expirationDate": "01/25",
+    "expirationDate": "01/28",
     "cvv": 911,
     "amount": "25000",
     "userName": "Bojana"
@@ -80,7 +80,21 @@ raw json body:
 
 ---
 
-[GET] Dobavi sve račune u svim valutama
+[GET] Izlistaj neverifikovane kartice
+http://localhost:5000/verifyCard
+
+---
+
+[POST] Verifikuj karticu (admin)
+http://localhost:5000/verifyCard
+raw json body:
+{
+    "cardNumber": "9988776655443322"
+}
+
+---
+
+[GET] Dobavi sve račune u svim valutama za ulogovanog korisnika
 http://localhost:5000/accountBalance/<token>
 
 ---
