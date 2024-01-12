@@ -1,4 +1,4 @@
-from Configuration.config import api, jsonify, db, activeTokens, make_response, reqparse
+from Configuration.config import api, jsonify, db, activeTokens, make_response, reqparse, transaction_queue
 from flask_restful import Resource
 from Models.__init__ import Transaction, TransactionSchema
 from Processes.__init__ import addTransaction
@@ -11,7 +11,7 @@ transactionArgs.add_argument("product", type=int, help="Product ID is required",
 
 # Get transaction - returns history of transactions for user
 # Post transaction - makes new transaction (buys product)
-class TransactionProfile(Resource):
+class TransactionData(Resource):
     def get(self, token):
         try:
             if token not in activeTokens.keys():
@@ -49,42 +49,44 @@ class TransactionProfile(Resource):
             if args["amount"] <= 0:
                 return "Amount must be greater than 0", 400
 
+            # TODO add transaction to queue
+            #new_trans = Transaction(email, receiverEmail, args['amount'], args['currency'], args['product'])
+            #transaction_queue.append(new_trans)
+
+            # TODO change
             addTransaction(token, (email, receiverEmail, args['amount'], args['currency'], args['product']))
             return "OK", 200
         except Exception as e:
             return 'Error: ' + str(e), 500
 
 
-api.add_resource(TransactionProfile, "/transaction/<string:token>")
+api.add_resource(TransactionData, "/transaction/<string:token>")
 
 
-# TODO get-all chronologically (for admin)
-# (već je hronološki zbog ID, samo mu vrati listu svih koji su "Approved")
-
-
-#vraca istoriju izvrsenih transakcija administratoru
+# For Admin - returns transactions from all users
 class TransactionHistory(Resource):
     def get(self, token):
         try:
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
-            email = activeTokens[token]
 
-            transactionHistory = db.session.execute(
+            transaction_history = db.session.execute(
                 db.select(Transaction).filter_by(state="Approved")).all()
 
-            if len(transactionHistory) == 0:
-                return "There are no transactions", 200
-
+            if len(transaction_history) == 0:
+                return "There are no approved transactions", 200
 
             list = []
-            for transaction in transactionHistory:
+            for transaction in transaction_history:
                 transaction_schema = TransactionSchema()
                 result = transaction_schema.dump(transaction[0])
                 list.append(result)
+
+            list.reverse()      # Most recent first
             return make_response(jsonify(list), 200)
 
         except Exception as e:
             return 'Error: ' + str(e), 500
+
 
 api.add_resource(TransactionHistory, "/transactionHistory/<string:token>")

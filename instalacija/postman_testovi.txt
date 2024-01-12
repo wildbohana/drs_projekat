@@ -6,8 +6,8 @@ raw json body:
     "password": "123",
     "firstName": "Bojana",
     "lastName": "Mihajlovic",
-    "address": "Jug Bogdana 112",
-    "city": "Backa Palanka",
+    "address": "Marsala Tita 22",
+    "city": "Backa Topola",
     "state": "Srbija",
     "phoneNumber": "123123123"
 }

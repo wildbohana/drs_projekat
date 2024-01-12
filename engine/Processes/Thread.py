@@ -6,10 +6,6 @@ from Models.__init__ import Transaction, User, Balance, Product
 from threading import Lock
 
 
-mutex = Lock()
-# TODO: dodaj red za odobravanje transakcija koji svakih 60s obavi sve transakcije
-
-
 # Thread that processes transactions
 def threadWorker(email, receiver, amount, currency, product, client_id):
     def changeTransactionState(transaction, state):
@@ -34,7 +30,6 @@ def threadWorker(email, receiver, amount, currency, product, client_id):
             transaction = Transaction(email, receiver, amount, currency, "Processing", product)
             db.session.add(transaction)
             db.session.commit()
-            #sleep(60)    #60 seconds
 
         print("Starting money exchange...", sys.stderr)
         with app.app_context():

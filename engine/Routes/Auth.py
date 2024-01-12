@@ -1,5 +1,6 @@
 from Models.User import User
 from Configuration.config import api, db, reqparse, Resource, jsonify, make_response, activeTokens, create_hash
+from Configuration import emails
 from datetime import datetime
 from Processes.__init__ import openProcess, closeProcess
 from flask import request
@@ -34,6 +35,15 @@ class Register(Resource):
 
             db.session.add(user)
             db.session.commit()
+
+            # Notify admin about new registration
+            subject = "New user registered"
+            body = (f"User data:\nFirst name: {args['firstName']}\n"
+                    f"Last name: {args['lastName']}\nAddress: {args['address']}\n"
+                    f"City: {args['city']}\nState: {args['state']}\n"
+                    f"Phone number: {args['phoneNumber']}\nEmail: {args['email']}")
+            emails.sendEmail(subject, body)
+
             return "New user has been created!", 200
         except Exception as e:
             return "Error: " + str(e), 500

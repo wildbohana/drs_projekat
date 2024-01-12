@@ -3,6 +3,7 @@ from threading import Thread
 from Processes.Thread import *
 
 # Dict with tokens and PIDs
+# TODO probably remove, I only need a few threads, and not their tokens
 activeProcesses = {}
 
 
@@ -10,7 +11,7 @@ activeProcesses = {}
 def processWorker(q: Queue):
     while True:
         if q.qsize() == 0:
-            sleep(0.1)
+            sleep(10)       # 10 seconds
             continue
 
         transaction = q.get()

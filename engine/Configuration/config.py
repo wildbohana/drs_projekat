@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flaskext.mysql import MySQL
 from flask_cors import CORS
-import hashlib, socket
+import hashlib
+import socket
 
 app = Flask(__name__)
 
@@ -26,6 +27,7 @@ CORS(app)
 
 # Dict(Key, value) = token, email
 activeTokens = {}
+transaction_queue = []
 
 # For processes
 sendingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
