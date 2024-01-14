@@ -1,3 +1,5 @@
+### AUTH ###
+
 [POST] Registracija korisnika
 http://localhost:5000/register
 raw json body:
@@ -6,8 +8,8 @@ raw json body:
     "password": "123",
     "firstName": "Bojana",
     "lastName": "Mihajlovic",
-    "address": "Jug Bogdana 112",
-    "city": "Backa Palanka",
+    "address": "Marsala Tita 22",
+    "city": "Backa Topola",
     "state": "Srbija",
     "phoneNumber": "123123123"
 }
@@ -26,15 +28,31 @@ raw json body:
 
 ---
 
+[POST] Odjava korisnika
+http://localhost:5000/logout/<token>
+
+### USERPROFILE ###
+
 [GET] Korisnički profil
 http://localhost:5000/userProfile/<token>
 
 ---
 
-[POST] Odjava korisnika
-http://localhost:5000/logout/<token>
+[PATCH] Izmeni korisnički profil
+http://localhost:5000/userProfile/<token>
+raw json body:
+{
+	"email": "bojana123@gmail.com",
+    "password": "123",
+    "firstName": "Bojana",
+    "lastName": "Mihajlovic",
+    "address": "Marsala Tita 22",
+    "city": "Silbas",
+    "state": "Srbija",
+    "phoneNumber": "321321321"
+}
 
----
+### PRODUCTS ###
 
 [POST] Dodavanje proizvoda
 http://localhost:5000/addProduct
@@ -65,14 +83,14 @@ raw json body:
     "amount": "20"
 }
 
----
+### CREDITCARD ###
 
 [POST] Dodaj karticu na nalog (verifikacija)
 http://localhost:5000/card/<token>
 raw json body:
 {
     "cardNumber": "9191919191919191",
-    "expirationDate": "01/25",
+    "expirationDate": "01/28",
     "cvv": 911,
     "amount": "25000",
     "userName": "Bojana"
@@ -80,7 +98,21 @@ raw json body:
 
 ---
 
-[GET] Dobavi sve račune u svim valutama
+[GET] Izlistaj neverifikovane kartice
+http://localhost:5000/verifyCard
+
+---
+
+[POST] Verifikuj karticu (admin)
+http://localhost:5000/verifyCard
+raw json body:
+{
+    "cardNumber": "9988776655443322"
+}
+
+### BALANCE ###
+
+[GET] Dobavi sve račune u svim valutama za ulogovanog korisnika
 http://localhost:5000/accountBalance/<token>
 
 ---
@@ -93,7 +125,7 @@ raw json body:
     "currency": "EUR"
 }
 
----
+### EXCHANGE ###
 
 [GET] Proveri odnos u kursu
 http://localhost:5000/exchange/<token>
@@ -103,7 +135,6 @@ raw json body:
     "newCurrency": "RSD",
     "oldValue": 100
 }
-
 
 ---
 
@@ -116,7 +147,7 @@ raw json body:
     "oldValue": 10
 }
 
----
+### TRANSACTIONS ###
 
 [GET] Dobavi sve odobrene transakcije za korisnika
 http://localhost:5000/transaction/<token>
@@ -131,3 +162,8 @@ raw json body:
     "currency": "EUR",
     "product": "3"
 }
+
+---
+
+[GET] Istorija svih kupovina (admin)
+http://localhost:5000/transactionHistory/<string:token>

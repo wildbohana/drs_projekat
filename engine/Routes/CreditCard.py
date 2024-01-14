@@ -1,9 +1,8 @@
 from Configuration.config import *
 from flask_restful import Resource
-from Models.__init__ import CreditCard, User, Balance
+from Models.__init__ import CreditCard, CreditCardSchema, User, Balance
 
 
-#TODO administrator treba da odobri dodavanje kartice na nalog (ovo na frontu?)
 cardArgs = reqparse.RequestParser()
 cardArgs.add_argument("cardNumber", type=str, help="Card Number is required", required=True)
 cardArgs.add_argument("expirationDate", type=str, help="Date is required", required=True)
@@ -16,11 +15,11 @@ cardArgs.add_argument("userName", type=str, help="Name and surname are required"
 class Card(Resource):
     def post(self, token):
         args = cardArgs.parse_args()
-        cardNumber = args['cardNumber']
-        expirationDate = args['expirationDate']
+        card_number = args['cardNumber']
+        expiration_date = args['expirationDate']
         cvv = args['cvv']
         amount = args['amount']
-        userName = args['userName']
+        user_name = args['userName']
 
         try:
             if token not in activeTokens.keys():
@@ -33,13 +32,13 @@ class Card(Resource):
                 return "You already have a credit card", 400
 
             # Create the credit card
-            card = CreditCard(cardNumber, userName, expirationDate, cvv, amount, account[0].accountNumber)
+            card = CreditCard(card_number, user_name, expiration_date, cvv, amount, account[0].accountNumber)
             db.session.add(card)
             db.session.commit()
 
             # Verify account
             account[0].verified = True
-            account[0].cardNumber = cardNumber
+            account[0].cardNumber = card_number
 
             # Create balance in RSD for this account (initially 0)
             db.session.add(Balance(account[0].accountNumber, 0, "RSD"))
@@ -50,3 +49,54 @@ class Card(Resource):
 
 
 api.add_resource(Card, "/card/<string:token>")
+
+
+# Verify credit card (admin only)
+verifyCardArgs = reqparse.RequestParser()
+verifyCardArgs.add_argument("cardNumber", type=str, help="Card Number is required", required=True)
+
+
+class VerifyCard(Resource):
+    def post(self):
+        args = verifyCardArgs.parse_args()
+        card_number = args['cardNumber']
+
+        try:
+            # Get info on credit card
+            temp = db.session.execute(db.select(CreditCard).filter_by(cardNumber=card_number)).one_or_none()
+            if temp is None:
+                return "That card doesn't exist", 400
+            card = temp[0]
+            if card.verified:
+                return "That card is already verified", 400
+
+            # Verify the credit card
+            card.verified = True
+            db.session.add(card)
+            db.session.commit()
+
+            return "OK", 200
+        except Exception as e:
+            return "Error: " + str(e), 400
+
+    # Get all unverified cards
+    def get(self):
+        try:
+            # Get info on credit card
+            cards = db.session.execute(db.select(CreditCard).filter_by(verified=False)).all()
+            if len(cards) == 0:
+                return "All cards are verified", 200
+
+            list = []
+            for card in cards:
+                cards_schema = CreditCardSchema()
+                result = cards_schema.dump(card[0])
+                list.append(result)
+
+            return make_response(jsonify(list), 200)
+
+        except Exception as e:
+            return "Error: " + str(e), 400
+
+
+api.add_resource(VerifyCard, "/verifyCard")

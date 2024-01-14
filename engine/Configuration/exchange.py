@@ -6,6 +6,9 @@ import urllib.request
 # File with exchange rates (WINDOWS PATH)
 path = ".\\Configuration\\results.json"
 
+# File with exchange rates (UNIX PATH)
+# path = "./Configuration/results.json"
+
 
 # Get rates from API (relative to EUR)
 def getRatesFromAPI():
