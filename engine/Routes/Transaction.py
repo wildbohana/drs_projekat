@@ -1,7 +1,7 @@
-from Configuration.config import api, jsonify, db, activeTokens, make_response, reqparse, transaction_queue
+from Configuration.config import api, jsonify, db, activeTokens, make_response, reqparse
+from Configuration.exchange import exchangeMoney
 from flask_restful import Resource
-from Models.__init__ import Transaction, TransactionSchema
-from Processes.__init__ import addTransaction
+from Models.__init__ import Transaction, TransactionSchema, Product, Balance, User, CreditCard
 
 
 transactionArgs = reqparse.RequestParser()
@@ -11,7 +11,7 @@ transactionArgs.add_argument("product", type=int, help="Product ID is required",
 
 
 # Get transaction - returns history of transactions for user
-# Post transaction - makes new transaction (buys product)
+# Post transaction - makes new transaction ("buys" product)
 class TransactionData(Resource):
     def get(self, token):
         try:
@@ -45,17 +45,62 @@ class TransactionData(Resource):
 
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
-            email = activeTokens[token]
+            sender_email = activeTokens[token]
 
-            if args["amount"] <= 0:
+            amount = args['amount']
+            if amount <= 0:
                 return "Amount must be greater than 0", 400
 
-            # Add transaction to queue
-            new_trans = Transaction(email, receiver_email, args['amount'], args['currency'], "Processing", args['product'])
-            transaction_queue.append(new_trans)
+            currency = args['currency']
+            state = 'Processing'
+            product_id = args['product']
 
-            # TODO change
-            addTransaction(token, (email, receiver_email, args['amount'], args['currency'], args['product']))
+            # New transaction in "Processing" state (for now)
+            transaction = Transaction(sender_email, receiver_email, amount, currency, state, product_id)
+
+            # Product amount
+            temp = db.session.execute(db.select(Product).filter_by(id=transaction.product)).one_or_none()
+            if temp is None:
+                raise Exception("")
+            prod = temp[0]
+            if prod.amount < transaction.amount:
+                raise Exception("")
+
+            # Product price in given currency
+            product_price = prod.price * transaction.amount
+            if prod.currency != transaction.currency:
+                product_price = exchangeMoney(product_price, prod.currency, transaction.currency)
+
+            # Sender (buyer) account
+            temp = db.session.execute(db.select(User).filter_by(email=transaction.sender)).one_or_none()
+            if temp is None:
+                raise Exception("")
+
+            account = temp[0]
+            temp = db.session.execute(
+                db.select(Balance).filter_by(accountNumber=account.accountNumber, currency=transaction.currency)
+            ).one_or_none()
+            if temp is None:
+                raise Exception("")
+
+            # Check if sender's card is verified
+            temp = db.session.execute(
+                db.select(CreditCard).filter_by(bankAccountNumber=account.accountNumber)).one_or_none()
+            if temp is None:
+                raise Exception("")
+            card = temp[0]
+            if not card.verified:
+                raise Exception("")
+
+            # Balance in selected currency
+            # If buyer doesn't have enough funds -> Deny transaction
+            balance = temp[0]
+            if balance.amount < product_price:
+                transaction.state = "Denied"
+
+            db.session.add(transaction)
+            db.session.commit()
+
             return "OK", 200
         except Exception as e:
             return 'Error: ' + str(e), 500
@@ -71,6 +116,12 @@ class TransactionHistory(Resource):
             if token not in activeTokens.keys():
                 return "Please login to continue.", 400
 
+            # Check if request came from admin
+            admin_email = "drs.projekat.tim12@gmail.com"
+            if activeTokens[token] != admin_email:
+                return "You are not administrator!", 400
+
+            # Get all transactions
             transaction_history = db.session.execute(db.select(Transaction)).all()
 
             if len(transaction_history) == 0:

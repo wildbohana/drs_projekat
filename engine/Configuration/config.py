@@ -27,10 +27,6 @@ CORS(app, supports_credentials=True)
 
 # Dict(Key, value) = token, email
 activeTokens = {}
-transaction_queue = []
-
-# For processes
-sendingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
 # Hash for token

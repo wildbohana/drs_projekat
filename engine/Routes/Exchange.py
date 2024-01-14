@@ -39,31 +39,31 @@ class Exchange(Resource):
             if not balances:
                 return "You dont have any state", 400
 
-            oldBalance, newBalance = None, None
+            old_balance, new_balance = None, None
             for temp in balances:
                 balance = temp[0]
                 if balance.currency == args["oldCurrency"]:
-                    oldBalance = balance
+                    old_balance = balance
                 elif balance.currency == args["newCurrency"]:
-                    newBalance = balance
+                    new_balance = balance
 
-            if oldBalance is None:
+            if old_balance is None:
                 return "You don't have any money in " + args["oldCurrency"], 400
 
-            if oldBalance.amount < args["oldValue"]:
+            if old_balance.amount < args["oldValue"]:
                 return "You don't have enough money in " + args["oldCurrency"], 400
 
-            if newBalance is None:
-                newBalance = Balance(account.accountNumber, 0, args["newCurrency"])
-                db.session.add(newBalance)
+            if new_balance is None:
+                new_balance = Balance(account.accountNumber, 0, args["newCurrency"])
+                db.session.add(new_balance)
                 db.session.commit()
 
-            oldBalance.amount -= args["oldValue"]
-            if oldBalance.amount == 0:
-                db.session.delete(oldBalance)
+            old_balance.amount -= args["oldValue"]
+            if old_balance.amount == 0:
+                db.session.delete(old_balance)
                 db.session.commit()
 
-            newBalance.amount += exchangeMoney(args["oldValue"], args["oldCurrency"], args["newCurrency"])
+            new_balance.amount += exchangeMoney(args["oldValue"], args["oldCurrency"], args["newCurrency"])
             db.session.commit()
             return "OK", 200
         except Exception as e:

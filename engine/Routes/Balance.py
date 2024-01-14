@@ -60,30 +60,30 @@ class AccountBalance(Resource):
             if not account.verified:
                 return "Please verify first", 400
 
-            userAccounts = db.session.execute(db.select(Balance).filter_by(accountNumber=account.accountNumber)).all()
-            targetBalance = None
+            user_accounts = db.session.execute(db.select(Balance).filter_by(accountNumber=account.accountNumber)).all()
+            target_balance = None
 
             # Check if user has balance in that currency
-            for balance in userAccounts:
+            for balance in user_accounts:
                 if balance[0].currency == currency:
-                    targetBalance = balance[0]
+                    target_balance = balance[0]
 
             # If not, create new balance
-            if targetBalance is None:
-                targetBalance = Balance(account.accountNumber, 0, currency)
-                db.session.add(targetBalance)
+            if target_balance is None:
+                target_balance = Balance(account.accountNumber, 0, currency)
+                db.session.add(target_balance)
                 db.session.commit()
 
-            if targetBalance:
+            if target_balance:
                 card = db.session.execute(db.select(CreditCard).filter_by(cardNumber=account.cardNumber)).one_or_none()
 
                 # Convert amount to RSD
-                amountInRSD = exchange.exchangeMoney(amount, currency, "RSD")
-                if card[0].amount < amountInRSD:
+                amount_in_rsd = exchange.exchangeMoney(amount, currency, "RSD")
+                if card[0].amount < amount_in_rsd:
                     return "You don't have enough money on credit card", 400
-                card[0].amount -= amountInRSD
+                card[0].amount -= amount_in_rsd
 
-                targetBalance.amount += amount
+                target_balance.amount += amount
                 db.session.commit()
                 return "OK", 200
             else:

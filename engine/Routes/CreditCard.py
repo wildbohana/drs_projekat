@@ -15,11 +15,11 @@ cardArgs.add_argument("userName", type=str, help="Name and surname are required"
 class Card(Resource):
     def post(self, token):
         args = cardArgs.parse_args()
-        cardNumber = args['cardNumber']
-        expirationDate = args['expirationDate']
+        card_number = args['cardNumber']
+        expiration_date = args['expirationDate']
         cvv = args['cvv']
         amount = args['amount']
-        userName = args['userName']
+        user_name = args['userName']
 
         try:
             if token not in activeTokens.keys():
@@ -32,13 +32,13 @@ class Card(Resource):
                 return "You already have a credit card", 400
 
             # Create the credit card
-            card = CreditCard(cardNumber, userName, expirationDate, cvv, amount, account[0].accountNumber)
+            card = CreditCard(card_number, user_name, expiration_date, cvv, amount, account[0].accountNumber)
             db.session.add(card)
             db.session.commit()
 
             # Verify account
             account[0].verified = True
-            account[0].cardNumber = cardNumber
+            account[0].cardNumber = card_number
 
             # Create balance in RSD for this account (initially 0)
             db.session.add(Balance(account[0].accountNumber, 0, "RSD"))
