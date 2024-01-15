@@ -6,12 +6,13 @@ npm install axios
 */
 
 //TODO: css za sve page-ve i prikaz proizvoda na Home page-u
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Login } from './Components/Login';
 import { Register } from './Components/Register';
 import { Home } from './Components/Home';
 import { AddProduct } from './Components/AddProduct';
+import { EditProfile } from './Components/EditProfile';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/addProduct" element={<AddProduct />} />
+        <Route path="/editProfile" element={<EditProfile />} />
       </Routes>
     </Router>
   )

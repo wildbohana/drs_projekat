@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Home.module.css'
-import styles1 from './Navbar.module.css'
+import { Navbar } from './Navbar';
 
 export const Home = () => {
     const [products, setProducts] = useState([]);
@@ -32,23 +32,7 @@ export const Home = () => {
         navigate('/addProduct');
     }
 
-    const handleLogout = async () => {
-        try {
-            const userToken = localStorage.getItem('userToken');
 
-            if (!userToken) {
-                console.log('User token not found!');
-                return;
-            }
-
-            await axios.post(`/logout/${userToken}`);
-            localStorage.removeItem('userToken');
-            navigate('/');
-        } catch (error) {
-            console.error('Error during logout: ', error.response ? error.response.data : error.message);
-            setError('ErrorDuring logout. Please try again later');
-        }
-    }
 
     const handleAmountChange = async (productId, newAmount) => {
         try {
@@ -66,25 +50,7 @@ export const Home = () => {
 
     return (
         <div>
-            <header>
-                <nav>
-                    <ul className={styles1.nav_links}>
-                        <li>
-                            <a href="/home">Home</a>
-                        </li>
-                        <li>
-                            <a href="#">Account</a>
-                        </li>
-                        <li>
-                            <a href="#">History</a>
-                        </li>
-                        <li>
-                            <a href="#">Edit profile</a>
-                        </li>
-                    </ul>
-                </nav>
-                <a href="/"><button onClick={handleLogout}>Logout</button></a>
-            </header>
+            <Navbar />
             <div className={styles.homeContainer}>
 
                 <table className={styles.productTable}>
