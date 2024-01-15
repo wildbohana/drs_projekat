@@ -6,6 +6,7 @@ import { Navbar } from './Navbar';
 
 export const Home = () => {
     const [products, setProducts] = useState([]);
+    const [selectedProductId, setSelectedProductId] = useState(null);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -32,7 +33,9 @@ export const Home = () => {
         navigate('/addProduct');
     }
 
-
+    const handleCheckboxChange = (productId) => {
+        setSelectedProductId(productId);
+    };
 
     const handleAmountChange = async (productId, newAmount) => {
         try {
@@ -56,6 +59,7 @@ export const Home = () => {
                 <table className={styles.productTable}>
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Name</th>
                             <th>Price</th>
                             <th>Currency</th>
@@ -66,6 +70,13 @@ export const Home = () => {
                     <tbody>
                         {products.map(product => (
                             <tr key={product.id}>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedProductId === product.id}
+                                        onChange={() => handleCheckboxChange(product.id)}
+                                    />
+                                </td>
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
                                 <td>{product.currency}</td>
