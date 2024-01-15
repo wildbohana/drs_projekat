@@ -1,4 +1,4 @@
-from Configuration.config import reqparse, api, db, jsonify, Resource, activeTokens, make_response
+from Configuration.config import reqparse, api, db, jsonify, Resource, activeTokens, make_response, create_hash
 from Models.User import User, UserSchema
 
 
@@ -53,7 +53,7 @@ class UserProfile(Resource):
             if args['phoneNumber']:
                 account[0].phoneNumber = args['phoneNumber']
             if args['password']:
-                account[0].password = args['password']
+                account[0].password = create_hash(args['password'])
 
             db.session.commit()
             activeTokens[token] = account[0].email

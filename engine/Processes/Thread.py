@@ -1,6 +1,6 @@
 import sys
 from time import sleep
-from Configuration.config import db, app
+from Configuration.config import db, app, emailQueue
 from Configuration.exchange import exchangeMoney
 from Models.__init__ import Transaction, User, Balance, Product
 from threading import Lock
@@ -10,7 +10,7 @@ mutex = Lock()
 
 
 # Thread that processes transactions
-def threadWorker(transaction):
+def threadWorker(transaction: Transaction):
     # Delete and add new one
     def changeTransactionState(current: Transaction, state):
         if not current:
@@ -28,27 +28,9 @@ def threadWorker(transaction):
             current.state = state
 
             db.session.add(current)
+            emailQueue.put(current)
             db.session.commit()
             print("New transaction added to database")
-
-    """
-    # Helper function
-    # Dupli upis u bazu -_-
-    def changeTransactionState(tr, state):
-        if not tr:
-            return
-        with app.app_context():
-            # merge() gets transaction from DB to local memory
-            tr = db.session.merge(tr)
-            db.session.execute(
-                db.select(Transaction).
-                filter_by(sender=tr.sender, receiver=tr.receiver, amount=tr.amount,
-                          currency=tr.currency, state="Processing", product=tr.product).
-                order_by(Transaction.id)
-            ).scalars().first()
-            tr.state = state
-            db.session.commit()
-    """
 
     # Real function
     try:
