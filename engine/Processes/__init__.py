@@ -1,1 +1,1 @@
-from Processes.Thread import openThread
+from Processes.Process import openProcess, closeProcess, addTransaction

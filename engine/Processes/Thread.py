@@ -1,73 +1,45 @@
 import sys
-import threading
 from time import sleep
-from Configuration.config import db, app, transaction_queue
+from Configuration.config import db, app
 from Configuration.exchange import exchangeMoney
-from Configuration.emails import sendEmail
-from Models.__init__ import Transaction, User, Balance, Product, CreditCard
+from Models.__init__ import Transaction, User, Balance, Product
+from threading import Lock
 
 
-# Open thread for transaction
-def openThread():
-    thread = threading.Thread(target=processTransactions)
-    thread.start()
-
-
-def processTransactions():
-    #print("HI FROM THREAD")
-    #sleep(60)
-    sleep(1)
-
-    email_subject = "New transactions"
-    email_body = ""
-
-    with app.app_context():
-        for transaction in transaction_queue:
-            #print(transaction.product)
-            temp = processOneTransaction(transaction)
-            email_body += f"Transaction details:\nProduct ID: {temp.product}\nBuyer email: {temp.sender}\nAmount: {temp.amount}\nCurrency: {temp.currency}\nState: {temp.state}\n"
-
-    if email_body != "":
-        sendEmail(email_subject, email_body)
-
-    transaction_queue.clear()
+mutex = Lock()
 
 
 # Thread that processes transactions
-def processOneTransaction(transaction: Transaction):
-    # Helper function
-    def changeTransactionState(tr, state):
-        if not tr:
+def threadWorker(transaction):
+    def changeTransactionState(current: Transaction, state):
+        if not current:
             return
         with app.app_context():
             # merge() gets transaction from DB to local memory
-            tr = db.session.merge(tr)
+            current = db.session.merge(current)
+
             db.session.execute(
                 db.select(Transaction).
-                filter_by(sender=tr.sender, receiver=tr.receiver, amount=tr.amount,
-                          currency=tr.currency, state="Processing", product=tr.product).
+                filter_by(sender=current.sender, receiver=current.receiver, amount=current.amount,
+                          currency=current.currency, state='Processing', product=current.product).
                 order_by(Transaction.id)
             ).scalars().first()
-            tr.state = state
+
+            current.state = state
             db.session.commit()
 
-    # Real function body
     try:
-        print("Starting transaction...", sys.stderr)
-        with app.app_context():
-            db.session.add(transaction)
-            db.session.commit()
+        print("Starting thread...", sys.stderr)
 
         print("Starting money exchange...", sys.stderr)
         with app.app_context():
             # Product amount
-            print(transaction.product)
-            temp = db.session.execute(db.select(Product).filter_by(id=transaction.product)).one_or_none()   #???
+            temp = db.session.execute(db.select(Product).filter_by(id=transaction.product)).one_or_none()   # GREŠKA!
             if temp is None:
-                raise Exception("")
+                raise Exception("prod am")
             prod = temp[0]
             if prod.amount < transaction.amount:
-                raise Exception("")
+                raise Exception("prod am")
 
             # Product price in given currency
             prodPrice = prod.price * transaction.amount
@@ -77,31 +49,23 @@ def processOneTransaction(transaction: Transaction):
             # Sender account
             temp = db.session.execute(db.select(User).filter_by(email=transaction.sender)).one_or_none()
             if temp is None:
-                raise Exception("")
+                raise Exception("acc")
 
             account = temp[0]
             temp = db.session.execute(
                 db.select(Balance).filter_by(accountNumber=account.accountNumber, currency=transaction.currency)
             ).one_or_none()
             if temp is None:
-                raise Exception("")
+                raise Exception("balance")
 
             balance = temp[0]
             if balance.amount < prodPrice:
-                raise Exception("")
-
-            # Check if sender's card is verified
-            temp = db.session.execute(db.select(CreditCard).filter_by(bankAccountNumber=account.accountNumber)).one_or_none()
-            if temp is None:
-                raise Exception("")
-            card = temp[0]
-            if not card.verified:
-                raise Exception("")
+                raise Exception("balance2")
 
             # Receiver account
             temp = db.session.execute(db.select(User).filter_by(email=transaction.receiver)).one_or_none()
             if not temp or not temp[0].verified:
-                raise Exception("")
+                raise Exception("receiver")
 
             accountReceiver = temp[0]
             receiverNumber = accountReceiver.accountNumber
@@ -124,9 +88,7 @@ def processOneTransaction(transaction: Transaction):
             db.session.commit()
 
         changeTransactionState(transaction, "Approved")
-        print(transaction.state)
-        return transaction
-    except:
+    except Exception as e:
+        print(str(e))
         changeTransactionState(transaction, "Denied")
-        print(transaction.state)
-        return transaction
+        return

@@ -1,8 +1,8 @@
-from Configuration.config import api, jsonify, db, activeTokens, make_response, reqparse
+from Configuration.config import api, jsonify, db, activeTokens, make_response, reqparse, app
 from Configuration.exchange import exchangeMoney
 from flask_restful import Resource
 from Models.__init__ import Transaction, TransactionSchema, Product, Balance, User, CreditCard
-
+from Processes.__init__ import addTransaction
 
 transactionArgs = reqparse.RequestParser()
 transactionArgs.add_argument("amount", type=float, help="Amount can't be 0 and it's required", required=True)
@@ -96,9 +96,12 @@ class TransactionData(Resource):
             # If buyer doesn't have enough funds -> Deny transaction
             balance = temp[0]
             if balance.amount < product_price:
-                transaction.state = "Denied"
+                transaction.state = 'Denied'
 
+            # Add new transaction to DB
             db.session.add(transaction)
+            addTransaction(token, transaction)
+
             db.session.commit()
 
             return "OK", 200
