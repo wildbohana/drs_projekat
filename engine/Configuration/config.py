@@ -5,7 +5,8 @@ from flask_marshmallow import Marshmallow
 from flaskext.mysql import MySQL
 from flask_cors import CORS
 import hashlib
-import socket
+
+from multiprocessing import Queue
 
 app = Flask(__name__)
 
@@ -27,6 +28,9 @@ CORS(app, supports_credentials=True)
 
 # Dict(Key, value) = token, email
 activeTokens = {}
+
+# Email queue
+emailQueue = Queue()
 
 
 # Hash for token

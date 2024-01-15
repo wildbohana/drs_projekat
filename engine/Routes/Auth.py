@@ -3,6 +3,7 @@ from Configuration.config import api, db, reqparse, Resource, jsonify, make_resp
 from Configuration import emails
 from datetime import datetime
 from flask import request
+from Processes.__init__ import openProcess, closeProcess
 
 
 userRegistrationArgs = reqparse.RequestParser()
@@ -76,6 +77,8 @@ class Login(Resource):
             token = create_hash(args['email'], str(datetime.now().timestamp()))
             activeTokens[token] = args['email']
 
+            openProcess(token)
+
             return make_response(jsonify({"token": token}), 200)
         except Exception as e:
             return "Error:" + str(e), 500
@@ -87,6 +90,7 @@ api.add_resource(Login, "/login")
 class Logout(Resource):
     def post(self, token):
         try:
+            closeProcess(token)
             activeTokens.pop(token)
             return "OK", 200
         except Exception as e:
