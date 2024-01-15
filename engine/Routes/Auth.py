@@ -24,7 +24,7 @@ class Register(Resource):
             if temp is not None:
                 return "Email is taken!", 400
 
-            password = create_hash(args["password"])
+            password = (args["password"])
             user = User(firstName=args['firstName'], lastName=args['lastName'],
                         address=args['address'], city=args['city'],
                         state=args['state'], phoneNumber=args['phoneNumber'],
@@ -63,7 +63,7 @@ class Login(Resource):
             if temp is None:
                 return "User doesnt exist!", 400
 
-            password = create_hash(args['password'])
+            password = (args['password'])
             if temp[0].password != password:
                 return "Invalid password", 400
 

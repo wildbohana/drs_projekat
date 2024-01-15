@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from './EditProfile.module.css';
 import { Navbar } from './Navbar'
 import axios from "axios";
@@ -13,10 +13,31 @@ export const EditProfile = () => {
     const [state, setState] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
-
     const [errorMessage, setErrorMessage] = useState('');
-
     const navigate = useNavigate();
+
+    const fetchUserProfile = async () => {
+        try {
+            const token = localStorage.getItem('userToken');
+            const response = await axios.get(`/userProfile/${token}`);
+            const userProfile = response.data;
+
+            setFirstName(userProfile.firstName);
+            setLastName(userProfile.lastName);
+            setEmail(userProfile.email);
+            setAddress(userProfile.address);
+            setCity(userProfile.city);
+            setState(userProfile.state);
+            setPhoneNumber(userProfile.phoneNumber);
+            setPassword(userProfile.password);
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserProfile();
+    }, []);
 
     const handleEditClick = async () => {
         try {
@@ -31,18 +52,17 @@ export const EditProfile = () => {
                 phoneNumber,
                 password,
             });
-            const successMessage = response.data;
-            console.log(successMessage);
 
-            setErrorMessage('');
-            window.alert('Profile edited successfully!');
+            console.log(response.data);
+
+            await fetchUserProfile();
+
             navigate('/');
         } catch (error) {
             console.error('Error editing profile:', error);
             setErrorMessage('Error editing profile. Please try again.');
         }
-
-    }
+    };
 
     return (
         <div>
