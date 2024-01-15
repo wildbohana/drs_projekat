@@ -6,6 +6,8 @@ from Configuration.emails import sendEmail
 # Dict with tokens and PIDs
 activeProcesses = {}
 
+#TODO add query for emails for each process
+
 """
 # Sends email when query for process is empty
 def TransactionsEmail():
@@ -31,9 +33,10 @@ def processWorker(q: Queue):
     while True:
         if q.qsize() == 0:
             #TransactionsEmail()
-            sleep(1)   # ovde ide 60s
+            sleep(20)   # ovde ide 60s
             continue
 
+        sleep(1)
         transaction = q.get()
         Thread(target=threadWorker, args=(transaction,)).start()
 
@@ -61,4 +64,3 @@ def addTransaction(token, transaction: Transaction):
 
     process, queue = activeProcesses[token]
     queue.put(transaction)
-    print("HI FROM PROCESS.PY")

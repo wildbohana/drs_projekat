@@ -11,23 +11,46 @@ mutex = Lock()
 
 # Thread that processes transactions
 def threadWorker(transaction):
+    # Delete and add new one
     def changeTransactionState(current: Transaction, state):
         if not current:
             return
         with app.app_context():
             # merge() gets transaction from DB to local memory
-            current = db.session.merge(current)
-
-            db.session.execute(
+            temp = db.session.execute(
                 db.select(Transaction).
                 filter_by(sender=current.sender, receiver=current.receiver, amount=current.amount,
                           currency=current.currency, state='Processing', product=current.product).
                 order_by(Transaction.id)
             ).scalars().first()
+            db.session.delete(temp)
 
             current.state = state
-            db.session.commit()
 
+            db.session.add(current)
+            db.session.commit()
+            print("New transaction added to database")
+
+    """
+    # Helper function
+    # Dupli upis u bazu -_-
+    def changeTransactionState(tr, state):
+        if not tr:
+            return
+        with app.app_context():
+            # merge() gets transaction from DB to local memory
+            tr = db.session.merge(tr)
+            db.session.execute(
+                db.select(Transaction).
+                filter_by(sender=tr.sender, receiver=tr.receiver, amount=tr.amount,
+                          currency=tr.currency, state="Processing", product=tr.product).
+                order_by(Transaction.id)
+            ).scalars().first()
+            tr.state = state
+            db.session.commit()
+    """
+
+    # Real function
     try:
         print("Starting thread...", sys.stderr)
 
@@ -82,7 +105,6 @@ def threadWorker(transaction):
             balance.amount -= prodPrice
             if balance.amount == 0:
                 db.session.delete(balance)
-            db.session.commit()
 
             prod.amount -= transaction.amount
             db.session.commit()
