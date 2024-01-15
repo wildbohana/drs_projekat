@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import './LoginAndRegister.css'
+import styles from './Login.module.css'
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -33,13 +33,13 @@ export const Login = () => {
     };
 
     return (
-        <div className='container'>
-            <div className="login form">
+        <div className={styles.container}>
+            <div className={styles.form}>
                 <h1>Login</h1>
                 <form>
-                    <input type="text" placeholder='Enter your email' className="form-input" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="text" placeholder='Enter your email' className={styles['form-input']} value={email} onChange={(e) => setEmail(e.target.value)} />
                     <input type="password" placeholder='Enter your password' className="form-input" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <button className='button' onClick={(e) => {
+                    <button className={styles.button} onClick={(e) => {
                         e.preventDefault();
                         if (email.trim() === '' || password.trim() === '') {
                             setErrorMessage('Please enter both email and password.');
@@ -50,9 +50,9 @@ export const Login = () => {
                     }}>Login</button>
                     {errorMessage && <p style={{ color: 'red', textAlign: 'center', marginBottom: 20 }}>{errorMessage}</p>}
                 </form>
-                <div className='signup'>
-                    <span className='signup'>Don't have an account?
-                        <a className='link' href='/register'>Signup</a>
+                <div className={styles.signup}>
+                    <span className={styles.signup}>Don't have an account?
+                        <a className={styles.link} href='/register'>Signup</a>
                     </span>
                 </div>
             </div>

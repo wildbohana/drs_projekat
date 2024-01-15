@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Home.css'
+import styles from './Home.module.css'
+import styles1 from './Navbar.module.css'
 
 export const Home = () => {
     const [products, setProducts] = useState([]);
@@ -63,46 +64,63 @@ export const Home = () => {
         }
     };
 
-    
-    
-
     return (
-        <div className="homeContainer">
+        <div>
+            <header>
+                <nav>
+                    <ul className={styles1.nav_links}>
+                        <li>
+                            <a href="/home">Home</a>
+                        </li>
+                        <li>
+                            <a href="#">Account</a>
+                        </li>
+                        <li>
+                            <a href="#">History</a>
+                        </li>
+                        <li>
+                            <a href="#">Edit profile</a>
+                        </li>
+                    </ul>
+                </nav>
+                <a href="/"><button onClick={handleLogout}>Logout</button></a>
+            </header>
+            <div className={styles.homeContainer}>
 
-            <table className='productTable'>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Currency</th>
-                        <th>Amount</th>
-                        <th>Action</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    {products.map(product => (
-                        <tr key={product.id}>
-                            <td>{product.name}</td>
-                            <td>{product.price}</td>
-                            <td>{product.currency}</td>
-                            <td>
-                                <input style={{ width: 100 }}
-                                    type="number"
-                                    value={product.amount}
-                                    onChange={(e) => handleAmountChange(product.id, e.target.value)}
-                                />
-                            </td>
-                            
+                <table className={styles.productTable}>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Currency</th>
+                            <th>Amount</th>
+                            <th>Action</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            {error && <p style={{ color: 'red', marginBottom: 20 }}>{error}</p>}
-            <div className='divHomeButtons'>
-                <button className='homeButton' onClick={handleNewProduct}>Add new</button>
-                <button className='homeButton' onClick={handleLogout}>Logout</button>
+                    </thead>
+                    <tbody>
+                        {products.map(product => (
+                            <tr key={product.id}>
+                                <td>{product.name}</td>
+                                <td>{product.price}</td>
+                                <td>{product.currency}</td>
+                                <td>
+                                    <input style={{ width: 100 }}
+                                        type="number"
+                                        value={product.amount}
+                                        onChange={(e) => handleAmountChange(product.id, e.target.value)}
+                                    />
+                                </td>
+
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {error && <p style={{ color: 'red', marginBottom: 20 }}>{error}</p>}
+                <div className={styles.divHomeButtons}>
+                    <button className={styles.homeButton} onClick={handleNewProduct}>Add new</button>
+                </div>
             </div>
-        </div>
+        </div >
     );
 };
 

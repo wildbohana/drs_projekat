@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import styles from './Register.module.css'
 
 export const Register = () => {
     const [firstName, setFirstName] = useState('');
@@ -27,7 +28,6 @@ export const Register = () => {
                 email,
                 password,
             });
-
             const successMessage = response.data;
             console.log(successMessage);
 
@@ -45,27 +45,27 @@ export const Register = () => {
     }
 
     return (
-        <div className='container'>
-            <div className='register form'>
+        <div className={styles.container}>
+            <div className={styles.form}>
                 <h1>Register</h1>
                 <form>
-                    <input type="text" className="form-input" placeholder='Enter your first name' value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                    <input type="text" className={styles['form-input']} placeholder='Enter your first name' value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                     <br />
-                    <input type="text" className="form-input" placeholder='Enter your last name' value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                    <input type="text" className={styles['form-input']} placeholder='Enter your last name' value={lastName} onChange={(e) => setLastName(e.target.value)} />
                     <br />
-                    <input type="text" className="form-input" placeholder='Enter your address' value={address} onChange={(e) => setAddress(e.target.value)} />
+                    <input type="text" className={styles['form-input']} placeholder='Enter your address' value={address} onChange={(e) => setAddress(e.target.value)} />
                     <br />
-                    <input type="text" className="form-input" placeholder='Enter your city' value={city} onChange={(e) => setCity(e.target.value)} />
+                    <input type="text" className={styles['form-input']} placeholder='Enter your city' value={city} onChange={(e) => setCity(e.target.value)} />
                     <br />
-                    <input type="text" className="form-input" placeholder='Enter your state' value={state} onChange={(e) => setState(e.target.value)} />
+                    <input type="text" className={styles['form-input']} placeholder='Enter your state' value={state} onChange={(e) => setState(e.target.value)} />
                     <br />
-                    <input type="number" className="form-input" placeholder='Enter your phone number' value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                    <input type="number" className={styles['form-input']} placeholder='Enter your phone number' value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                     <br />
-                    <input type="email" className="form-input" placeholder='Enter your email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="email" className={styles['form-input']} placeholder='Enter your email' value={email} onChange={(e) => setEmail(e.target.value)} />
                     <br />
-                    <input type="password" className="form-input" placeholder='Enter your password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input type="password" className={styles['form-input']} placeholder='Enter your password' value={password} onChange={(e) => setPassword(e.target.value)} />
                     <br />
-                    <button className='button' onClick={(e) => {
+                    <button className={styles.button} onClick={(e) => {
                         e.preventDefault();
                         if (firstName.trim() === '' || lastName.trim() === '' || address.trim() === '' || city.trim() === '' || state.trim() === '' || phoneNumber.trim() === '' || email.trim() === '' || password.trim() === '') {
                             setErrorMessage('Please fill input fields!');

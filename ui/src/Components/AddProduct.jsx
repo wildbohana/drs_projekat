@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import styles from './AddProduct.module.css';
 
 export const AddProduct = () => {
     const [name, setName] = useState('');
@@ -39,14 +40,14 @@ export const AddProduct = () => {
     };
 
     return (
-        <div className='container'>
-            <div className='product form'>
+        <div className={styles.container}>
+            <div className={styles.form}>
                 <h1>Create product</h1>
-                <input type="text" placeholder="Product name" className="form-input" value={name} onChange={(e) => setName(e.target.value)} />
-                <input type="number" placeholder='Product price' className="form-input" value={price} onChange={(e) => setPrice(e.target.value)} />
-                <input type="text" placeholder='Product currency' className="form-input" value={currency} onChange={(e) => setCurrency(e.target.value)} />
-                <input type="number" placeholder='Product amount' className="form-input" value={amount} onChange={(e) => setAmount(e.target.value)} />
-                <button className='button' onClick={(e) => {
+                <input type="text" placeholder="Product name" className={styles['form-input']} value={name} onChange={(e) => setName(e.target.value)} />
+                <input type="number" placeholder='Product price' className={styles['form-input']} value={price} onChange={(e) => setPrice(e.target.value)} />
+                <input type="text" placeholder='Product currency' className={styles['form-input']} value={currency} onChange={(e) => setCurrency(e.target.value)} />
+                <input type="number" placeholder='Product amount' className={styles['form-input']} value={amount} onChange={(e) => setAmount(e.target.value)} />
+                <button className={styles.button} onClick={(e) => {
                     e.preventDefault();
                     if (name.trim() === '' || price.trim() === '' || currency.trim() === '' || amount.trim() === '') {
                         setErrorMessage('Please fill input fields!');
@@ -57,7 +58,7 @@ export const AddProduct = () => {
                         setErrorMessage('');
                     }
                 }}>Submit</button>
-                <button className='button' onClick={handleBackClick}>Back</button>
+                <button className={styles.button} onClick={handleBackClick}>Back</button>
                 {errorMessage && <p style={{ color: 'red', textAlign: 'center', marginBottom: 20 }} > {errorMessage}</p>}
             </div>
         </div>
