@@ -37,7 +37,7 @@ export const Navbar = () => {
                         <a href="/account">Account</a>
                     </li>
                     <li>
-                        <a href="/history">History</a>
+                        <a href="/transactionHistory">History</a>
                     </li>
                     <li>
                         <a href="/editProfile">Edit profile</a>

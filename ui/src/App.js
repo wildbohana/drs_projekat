@@ -13,6 +13,7 @@ import { Register } from './Components/Register';
 import { Home } from './Components/Home';
 import { AddProduct } from './Components/AddProduct';
 import { EditProfile } from './Components/EditProfile';
+import { TransactionHistory} from './Components/TransactionHistory'
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/addProduct" element={<AddProduct />} />
         <Route path="/editProfile" element={<EditProfile />} />
+        <Route path="/transactionHistory" element={<TransactionHistory/>}/>
       </Routes>
     </Router>
   )
