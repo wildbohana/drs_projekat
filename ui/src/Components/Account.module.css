@@ -1,0 +1,73 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+  
+  .form h1 {
+    text-align: center;
+  }
+  
+  .form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  
+  .form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .form button:hover {
+    background-color: #45a049;
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  /* Credit card specific styles */
+  
+  .credit-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .credit-card-inputs {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .credit-card-inputs input {
+    flex: 1;
+  }
+  
+  .credit-card-inputs input:nth-child(1),
+  .credit-card-inputs input:nth-child(2) {
+    flex: 2; /* Adjust the width of cardNumber and expirationDate inputs */
+  }
+  
