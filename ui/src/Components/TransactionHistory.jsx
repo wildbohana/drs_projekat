@@ -11,9 +11,18 @@ export const TransactionHistory = () => {
    
         useEffect(() => {
             const fetchTransactions = async () => {
+                let response;
+                
                 try {
-                    const token = localStorage.getItem('userToken')
-                    const response = await axios.get(`/transaction/${token}`);
+                    if(adminToken)
+                    {
+                        response = await axios.get(`/transactionHistory/${adminToken}`);        
+                    }
+                    else
+                    {
+                        const token = localStorage.getItem('userToken')
+                        response = await axios.get(`/transaction/${token}`);
+                    }
                     if (response.data && Array.isArray(response.data)) {
                         setTransaction(response.data);
                         setError('');
@@ -24,10 +33,14 @@ export const TransactionHistory = () => {
                     console.error('Error fetching products: ', error.response ? error.response.data : error.message);
                     setError('Error fetching products. Please try again later.');
                 }
+
             }
-    
-            fetchTransactions();
-        }, []);
+
+            if (adminToken || localStorage.getItem('userToken')) {
+                fetchTransactions();
+            }    
+           
+        }, [adminToken]);
     
 
     return (
