@@ -10,9 +10,33 @@ export const Home = () => {
     const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'));
     const [componentsDisabled, setComponentsDisabledd] = useState(true);
     const [error, setError] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
+    const [sortBy, setSortBy] = useState(null);
 
     const navigate = useNavigate();
 
+    const handleSort = (column) => {
+        const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+        setSortOrder(newOrder);
+        setSortBy(column);
+
+        const sortedProducts = [...products];
+        sortedProducts.sort((a, b) => {
+            if (column === 'name') {
+                const comparison = a.name.localeCompare(b.name);
+                return newOrder === 'asc' ? comparison : -comparison;
+            } else if (column === 'amount') {
+                return newOrder === 'asc' ? a.amount - b.amount : b.amount - a.amount;
+            } else if (column === 'price') {
+                return newOrder === 'asc' ? a.price - b.price : b.price - a.price;
+            } else if (column === 'currency') {
+                const comparison = a.currency.localeCompare(b.currency);
+                return newOrder === 'asc' ? comparison : -comparison;
+            }
+            return 0;
+        });
+        setProducts(sortedProducts);
+    };
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -69,11 +93,18 @@ export const Home = () => {
                         <tr>{componentsDisabled ? (
                             <th></th>
                         ) : ""}
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Currency</th>
-                            <th>Amount</th>
-                            <th>Action</th>
+                            <th onClick={() => handleSort('name')}>Name
+                                {sortBy === 'name' && <span>{sortOrder === 'asc' ? ' ▲' : ' ▼'}</span>}
+                            </th>
+                            <th onClick={() => handleSort('price')}>Price
+                                {sortBy === 'price' && <span>{sortOrder === 'asc' ? ' ▲' : ' ▼'}</span>}
+                            </th>
+                            <th onClick={() => handleSort('currency')}>Currency
+                                {sortBy === 'currency' && <span>{sortOrder === 'asc' ? ' ▲' : ' ▼'}</span>}
+                            </th>
+                            <th onClick={() => handleSort('amount')}>Amount
+                                {sortBy === 'amount' && <span>{sortOrder === 'asc' ? ' ▲' : ' ▼'}</span>}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,4 +148,3 @@ export const Home = () => {
         </div >
     );
 };
-
