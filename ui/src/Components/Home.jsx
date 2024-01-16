@@ -7,6 +7,8 @@ import { Navbar } from './Navbar';
 export const Home = () => {
     const [products, setProducts] = useState([]);
     const [selectedProductId, setSelectedProductId] = useState(null);
+    const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'));
+    const [componentsDisabled, setComponentsDisabledd] = useState(true);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -29,6 +31,13 @@ export const Home = () => {
         };
         fetchProducts();
     }, []);
+
+    useEffect(() => {
+        if (adminToken) {
+            setComponentsDisabledd(false);
+        }
+    }, [adminToken]);
+
     const handleNewProduct = () => {
         navigate('/addProduct');
     }
@@ -55,11 +64,11 @@ export const Home = () => {
         <div>
             <Navbar />
             <div className={styles.homeContainer}>
-
                 <table className={styles.productTable}>
                     <thead>
-                        <tr>
+                        <tr>{componentsDisabled ? (
                             <th></th>
+                        ) : ""}
                             <th>Name</th>
                             <th>Price</th>
                             <th>Currency</th>
@@ -70,31 +79,39 @@ export const Home = () => {
                     <tbody>
                         {products.map(product => (
                             <tr key={product.id}>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedProductId === product.id}
-                                        onChange={() => handleCheckboxChange(product.id)}
-                                    />
-                                </td>
+                                {componentsDisabled ? (
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedProductId === product.id}
+                                            onChange={() => handleCheckboxChange(product.id)}
+                                        />
+                                    </td>
+                                ) : null}
+
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
                                 <td>{product.currency}</td>
                                 <td>
-                                    <input style={{ width: 100 }}
-                                        type="number"
-                                        value={product.amount}
-                                        onChange={(e) => handleAmountChange(product.id, e.target.value)}
-                                    />
+                                    {!componentsDisabled ? (
+                                        <input style={{ width: 100 }}
+                                            type="number"
+                                            value={product.amount}
+                                            onChange={(e) => handleAmountChange(product.id, e.target.value)}
+                                        />
+                                    ) : (
+                                        <span>{product.amount}</span>
+                                    )}
                                 </td>
-
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 {error && <p style={{ color: 'red', marginBottom: 20 }}>{error}</p>}
                 <div className={styles.divHomeButtons}>
-                    <button className={styles.homeButton} onClick={handleNewProduct}>Add new</button>
+                    {!componentsDisabled && (
+                        <button className={styles.homeButton} onClick={handleNewProduct} >Add new</button>
+                    )}
                 </div>
             </div>
         </div >

@@ -15,9 +15,15 @@ export const Login = () => {
                 email,
                 password,
             });
-
             const { token } = response.data;
-            localStorage.setItem('userToken', token);
+            localStorage.clear();
+            console.log(localStorage);
+            if (email === "drs.projekat.tim12@gmail.com") {
+                localStorage.setItem('adminToken', token);
+            } else {
+                localStorage.setItem('userToken', token);
+            }
+            console.log(localStorage);
 
             setErrorMessage('');
             handleLoginSuccessfulClick();

@@ -29,7 +29,7 @@ export const EditProfile = () => {
             setCity(userProfile.city);
             setState(userProfile.state);
             setPhoneNumber(userProfile.phoneNumber);
-            setPassword(userProfile.password);
+            setPassword(userProfile.password || '');
         } catch (error) {
             console.error('Error fetching user profile:', error);
         }

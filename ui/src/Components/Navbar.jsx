@@ -1,11 +1,13 @@
 // Navbar.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import axios from 'axios';
 
 export const Navbar = () => {
     const [error, setError] = useState('');
+    const [adminToken, setAdminToken] = useState(localStorage.getItem('userToken'));
+    const [componentDisabled, setComponentsDisabled] = useState(true);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -25,6 +27,11 @@ export const Navbar = () => {
             setError('ErrorDuring logout. Please try again later');
         }
     }
+    useEffect(() => {
+        if (!adminToken) {
+            setComponentsDisabled(false);
+        }
+    }, [adminToken]);
 
     return (
         <header>
@@ -39,9 +46,11 @@ export const Navbar = () => {
                     <li>
                         <a href="/transactionHistory">History</a>
                     </li>
-                    <li>
-                        <a href="/editProfile">Edit profile</a>
-                    </li>
+                    {componentDisabled ? (
+                        <li>
+                            <a href="/editProfile">Edit profile</a>
+                        </li>
+                    ) : null}
                 </ul>
             </nav>
             <a href="/">
