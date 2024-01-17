@@ -84,6 +84,42 @@ export const Home = () => {
         }
     };
 
+    const handleBuyProduct = async () => {
+        const token = localStorage.getItem('userToken');
+        try{
+
+        
+        const selectedProduct = products.find(product => product.id === selectedProductId);
+        if (selectedProduct) {
+            const { currency } = selectedProduct;       
+            const amount = "1";
+            
+            console.log(amount);
+            console.log(currency);
+            
+            const response = await axios.post(`/transaction/${token}`, {
+                product: selectedProductId,
+                amount,
+                currency,
+            });
+
+            const successMessage = response.data;
+            console.log(successMessage);
+
+            setError('');
+            window.alert('Item bought');
+
+           
+        } else {
+            console.error('Selected product not found.');
+            setError('Selected product not found');
+        }
+    } catch (error) {
+        console.error('Error while processing the request:', error);
+        setError('Error while buying a product');
+    }
+    }
+
     return (
         <div>
             <Navbar />
@@ -143,6 +179,11 @@ export const Home = () => {
                     {!componentsDisabled && (
                         <button className={styles.homeButton} onClick={handleNewProduct} >Add new</button>
                     )}
+                </div>
+                <div className={styles.divHomeButtons}>
+                     
+                    <button className={styles.homeButton} onClick={handleBuyProduct} >Buy</button>
+                    
                 </div>
             </div>
         </div >
