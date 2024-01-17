@@ -1,0 +1,13 @@
+Pre dokerizovanja projekta:
+ - engine/Configuration/config.py
+   + odkomentariši liniju 19, zakomentariši 20
+   + odkomentariši liniju 27, zakomentariši 28
+ - engine/Configuration/exchange.py
+   + odkomentariši UNIX path, zakomentariši Windows path
+ - ui/package.json
+   + liniju 5 promeni na:
+    "proxy":  "http://host.docker.internal:5000",
+ 
+U folderu u kom se nalazi docker-compose.yml pokrenuti PowerShell
+Komanda je: docker-compose up (traje nekih 10 minuta prvi put)
+

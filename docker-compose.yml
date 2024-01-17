@@ -1,0 +1,48 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3333:3306"
+    command: --init-file /docker-entrypoint-initdb.d/dbinit.sql
+    environment: 
+      MYSQL_ROOT_PASSWORD: '123'
+      MYSQL_DATABASE: drs_sema
+    volumes:
+      - ./database/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql
+
+  engine:
+    build: 
+      dockerfile: ./engine/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    links:
+      - db
+    volumes:
+      - ./engine:/app/
+
+  ui:
+    image: "node:18.12.1"
+    depends_on:
+      - engine
+    working_dir: /home/node/app
+    links:
+      - engine
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm start"
+    volumes:
+      - ./ui:/home/node/app
+
+volumes:
+  db:
+    driver: local
+  ui:
+    driver: local
+    
+networks:
+  default:
+    driver: bridge
