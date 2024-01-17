@@ -7,7 +7,7 @@ export const TransactionHistory = () => {
     const [Transactions, setTransaction] = useState([]);
     const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'));
     const [error, setError] = useState('');
-    const [componentDisabled, setComponentDisabled] = useState(true);
+
 
 
     useEffect(() => {
@@ -26,18 +26,17 @@ export const TransactionHistory = () => {
                     setTransaction(response.data);
                     setError('');
                 } else {
-                    setError('Invalid response format. Please try again later.');
+                    setError('No transactions');
                 }
             } catch (error) {
-                console.error('Error fetching products: ', error.response ? error.response.data : error.message);
-                setError('Error fetching products. Please try again later.');
+                console.error('Error fetching transactions: ', error.response ? error.response.data : error.message);
+                setError('Error fetching transactions. Please try again later.');
             }
 
         }
 
-        if (adminToken) {
-            fetchTransactions();
-            setComponentDisabled(false);
+        if (adminToken || localStorage.getItem('userToken')) {
+            fetchTransactions();            
         }
 
     }, [adminToken]);
@@ -46,7 +45,7 @@ export const TransactionHistory = () => {
     return (
         <div>
             <Navbar />
-            {!componentDisabled ? (
+            (
 
                 <div className={styles.homeContainer}>
 
@@ -79,10 +78,7 @@ export const TransactionHistory = () => {
                     {error && <p style={{ color: 'red', marginBottom: 20 }}>{error}</p>}
 
                 </div>
-            ) : <div>
-                <h1>test</h1>
-            </div>}
-
+            ) : 
 
         </div >
     );
