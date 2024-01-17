@@ -55,6 +55,7 @@ h1 {
     width: 100%;
     padding: 0 15px;
     font-size: 17px;
+    margin: auto;
     margin-top: 0.5rem;
     margin-bottom: 1.3rem;
     border: 1px solid #ddd;

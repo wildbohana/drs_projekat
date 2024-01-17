@@ -36,8 +36,8 @@ export const Card = () => {
     }
 
     const handleSubmitClick = () => {
-        if (userName.trim() === '' || cardNumber.trim() === '' || expirationDate.trim() === '' || cvv.trim() === '' || (isNaN(+amount) || +amount <= 0)) {
-            setErrorMessage('Please fill input fields!');
+        if (userName.trim() === '' || cardNumber.trim() === '' || cardNumber.trim().startsWith('0') || expirationDate.trim() === '' || cvv.trim() === '' || (isNaN(+amount) || +amount <= 0)) {
+            setErrorMessage('Please fill input fields or correct the card number!');
         } else {
             handleValidationCard();
             setErrorMessage('');

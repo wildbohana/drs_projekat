@@ -1,6 +1,7 @@
 from Configuration.config import *
 from flask_restful import Resource
 from Models.__init__ import CreditCard, CreditCardSchema, User, Balance
+from flask import request
 
 
 cardArgs = reqparse.RequestParser()
@@ -55,11 +56,12 @@ api.add_resource(Card, "/card/<string:token>")
 verifyCardArgs = reqparse.RequestParser()
 verifyCardArgs.add_argument("cardNumber", type=str, help="Card Number is required", required=True)
 
-
 class VerifyCard(Resource):
     def post(self):
-        args = verifyCardArgs.parse_args()
-        card_number = args['cardNumber']
+        #args = verifyCardArgs.parse_args()
+        data = request.get_json()
+        card_number = data['cardNumber']
+        print("vc", card_number)
 
         try:
             # Get info on credit card

@@ -40,9 +40,11 @@ export const Navbar = () => {
                     <li>
                         <a href='/home'>Home</a>
                     </li>
-                    <li>
-                        <a href="/account">Account</a>
-                    </li>
+                    {!componentDisabled ? (
+                        <li>
+                            <a href="/account">Verification</a>
+                        </li>
+                    ) : null}
                     {componentDisabled ? (
                         <li>
                             <a href="/card">Credit card</a>
