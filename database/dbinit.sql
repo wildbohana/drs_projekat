@@ -1,7 +1,7 @@
---create schema drs_sema;
+CREATE DATABASE IF NOT EXISTS drs_sema;
 use drs_sema;
 
-create table user
+create table if not exists user
 (
     email varchar(64) unique,
     password varchar(64) not null,
@@ -16,7 +16,7 @@ create table user
     cardNumber varchar(16)
 );
 
-create table transaction
+create table if not exists transaction
 (
     id integer primary key AUTO_INCREMENT,
     sender varchar(64) not null,
@@ -27,7 +27,7 @@ create table transaction
     product integer not null
 );
 
-create table credit_card
+create table if not exists credit_card
 (
     cardNumber varchar(16) primary key,
     userName varchar(32) not null,
@@ -38,7 +38,7 @@ create table credit_card
 	verified tinyint not null
 );
 
-create table product
+create table if not exists product
 (
     id integer primary key AUTO_INCREMENT,
     name varchar(128) not null,
@@ -47,7 +47,7 @@ create table product
     amount float(12, 2) not null
 );
 
-create table balance
+create table if not exists balance
 (
     pk integer primary key AUTO_INCREMENT,
     accountNumber integer not null,
