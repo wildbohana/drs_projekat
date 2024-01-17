@@ -103,6 +103,7 @@ class VerifyCard(Resource):
 
 api.add_resource(VerifyCard, "/verifyCard")
 
+"""
 
 class VerifiedCard(Resource):
     def get(self, token):
@@ -126,3 +127,4 @@ class VerifiedCard(Resource):
 
 
 api.add_resource(VerifyCard, "/getUserCard/<string:token>")
+"""

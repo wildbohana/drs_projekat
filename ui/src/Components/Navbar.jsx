@@ -5,7 +5,7 @@ import styles from './Navbar.module.css';
 import axios from 'axios';
 
 export const Navbar = () => {
-    const [navConst]
+    
     const [error, setError] = useState('');
     const [adminToken, setAdminToken] = useState(localStorage.getItem('userToken'));
     const [componentDisabled, setComponentsDisabled] = useState(true);
@@ -29,38 +29,13 @@ export const Navbar = () => {
         }
     }
 
-    const handleCard = async () => {
-        
-        try {
-            const userToken = localStorage.getItem('userToken');
     
-            if (!userToken) {
-                console.log('User token not found!');
-                return;
-            }
-    
-            const response = await axios.get(`/getUserCard/${userToken}`);
-            
-            if (response.data.message && response.data.message === 'Card not verified') {
-                // Handle the case where the card is not verified
-                console.log('Card not verified');
-                konstanta = '/card'
-            } else {
-                
-                const creditCardData = response.data;
-                console.log('Verified Credit Card:', creditCardData);
-                navigate('/verifiedCard');
-            }
-        } catch (error) {
-            console.error('Error while fetching user card:', error);
-            
-    };
     useEffect(() => {
         if (!adminToken) {
             setComponentsDisabled(false);
         }
     }, [adminToken]);
-    }
+    
     return (
         <header>
             <nav>
@@ -75,7 +50,7 @@ export const Navbar = () => {
                     ) : null}
                     {componentDisabled ? (
                         <li>
-                            <a href={navConst}>Credit card</a>
+                            <a href="/card">Credit card</a>
                         </li>
                     ) : null}
                     
@@ -87,6 +62,11 @@ export const Navbar = () => {
                             <a href="/editProfile">Edit profile</a>
                         </li>
                     ) : null}
+                     
+                    <li>
+                        <a href="/balance">Balance</a>
+                    </li>
+                     
                 </ul>
             </nav>
             <a href="/">
