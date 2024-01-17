@@ -13,7 +13,8 @@ import { Register } from './Components/Register';
 import { Home } from './Components/Home';
 import { AddProduct } from './Components/AddProduct';
 import { EditProfile } from './Components/EditProfile';
-import { TransactionHistory} from './Components/TransactionHistory'
+import { TransactionHistory } from './Components/TransactionHistory'
+import { Account } from './Components/Account';
 
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/addProduct" element={<AddProduct />} />
         <Route path="/editProfile" element={<EditProfile />} />
-        <Route path="/transactionHistory" element={<TransactionHistory/>}/>
+        <Route path="/transactionHistory" element={<TransactionHistory />} />
+        <Route path="/account" element={<Account />} />
       </Routes>
     </Router>
   )
