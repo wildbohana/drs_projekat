@@ -13,8 +13,8 @@ import { Register } from './Components/Register';
 import { Home } from './Components/Home';
 import { AddProduct } from './Components/AddProduct';
 import { EditProfile } from './Components/EditProfile';
-import { TransactionHistory } from './Components/TransactionHistory'
-import { Card } from './Components/Card'
+import { TransactionHistory } from './Components/TransactionHistory';
+import { Card } from './Components/Card';
 import { Account } from './Components/Account';
 
 

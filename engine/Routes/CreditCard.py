@@ -102,3 +102,27 @@ class VerifyCard(Resource):
 
 
 api.add_resource(VerifyCard, "/verifyCard")
+
+
+class VerifiedCard(Resource):
+    def get(self, token):
+        try:
+            if token not in activeTokens.keys():
+                return "Please login to continue.", 400
+            email = activeTokens[token]
+            # Get info on credit card
+            card = db.session.execute(db.select(CreditCard).filter_by(email=email, verified=True)).one_or_none()
+
+            if card is None:
+                return jsonify(message="Card not verified"), 200
+
+            cards_schema = CreditCardSchema()
+            result = cards_schema.dump(card[0])
+
+            return make_response(jsonify(result), 200)
+
+        except Exception as e:
+            return "Error: " + str(e), 400
+
+
+api.add_resource(VerifyCard, "/getUserCard/<string:token>")

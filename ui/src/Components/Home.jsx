@@ -100,7 +100,7 @@ export const Home = () => {
             const response = await axios.post(`/transaction/${token}`, {
                 product: selectedProductId,
                 amount,
-                currency,
+                currency
             });
 
             const successMessage = response.data;
@@ -181,8 +181,11 @@ export const Home = () => {
                     )}
                 </div>
                 <div className={styles.divHomeButtons}>
-                     
-                    <button className={styles.homeButton} onClick={handleBuyProduct} >Buy</button>
+                    {componentsDisabled &&(
+                        
+                        <button className={styles.homeButton} onClick={handleBuyProduct} >Buy</button>
+
+                    )}  
                     
                 </div>
             </div>
