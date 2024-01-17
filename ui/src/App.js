@@ -14,7 +14,7 @@ import { Home } from './Components/Home';
 import { AddProduct } from './Components/AddProduct';
 import { EditProfile } from './Components/EditProfile';
 import { TransactionHistory } from './Components/TransactionHistory'
-import { Account } from './Components/Account';
+import { Card } from './Components/Card'
 
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
         <Route path="/addProduct" element={<AddProduct />} />
         <Route path="/editProfile" element={<EditProfile />} />
         <Route path="/transactionHistory" element={<TransactionHistory />} />
-        <Route path="/account" element={<Account />} />
+        <Route path="/card" element={<Card />} />
       </Routes>
     </Router>
   )

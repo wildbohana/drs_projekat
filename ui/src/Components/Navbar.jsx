@@ -43,6 +43,11 @@ export const Navbar = () => {
                     <li>
                         <a href="/account">Account</a>
                     </li>
+                    {componentDisabled ? (
+                        <li>
+                            <a href="/card">Credit card</a>
+                        </li>
+                    ) : null}
                     <li>
                         <a href="/transactionHistory">History</a>
                     </li>
