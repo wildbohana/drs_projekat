@@ -10,7 +10,13 @@ from multiprocessing import Queue
 
 app = Flask(__name__)
 
+import socket
+hostname = socket.gethostname()
+ip_address = socket.gethostbyname(hostname).split('.')
+hostbase = f"{ip_address[0]}.{ip_address[1]}.{ip_address[2]}"
+
 # Connection for dockerized MySQL
+#app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://root:123@{hostbase}.1:3333/drs_sema'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:123@localhost:3333/drs_sema'
 app.config['SQLALCHEMY_POOL_SIZE'] = 5
 app.config['SQLALCHEMY_MAX_OVERFLOW'] = 2
@@ -18,6 +24,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '123'
 app.config['MYSQL_DATABASE_DB'] = 'drs_sema'
+#app.config['MYSQL_DATABASE_HOST'] = f'{hostbase}.1:3333'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost:3333'
 
 api = Api(app)
