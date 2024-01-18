@@ -12,7 +12,18 @@ export const Card = () => {
     const [userName, setUserName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    const isFormSubmitted = localStorage.getItem("formSubmitted");
+
+
+    
+    
+
+
     const navigate = useNavigate();
+
+
+
+
 
     const handleValidationCard = async () => {
         try {
@@ -34,17 +45,61 @@ export const Card = () => {
             setErrorMessage('Error adding card. Please try again.');
         }
     }
+    
+    
 
     const handleSubmitClick = () => {
         if (userName.trim() === '' || cardNumber.trim() === '' || cardNumber.trim().startsWith('0') || expirationDate.trim() === '' || cvv.trim() === '' || (isNaN(+amount) || +amount <= 0)) {
             setErrorMessage('Please fill input fields or correct the card number!');
+            
         } else {
             handleValidationCard();
+        
             setErrorMessage('');
             navigate('/home');
         }
     };
 
+
+
+    const [formSubmitted, setFormSubmitted] = useState(false);
+
+    const handleFormSubmit = () => {
+      // Check if the form has already been submitted
+      //const isFormSubmitted = localStorage.getItem("formSubmitted");
+  
+      if (isFormSubmitted) {
+        // Display a message indicating the form has already been filled out
+        alert("An existing card is already in use");
+      } else {
+        // Process the form submission logic
+        // ... (your form submission logic here)
+  
+        // Set the flag in local storage
+        localStorage.setItem("formSubmitted", "true");
+  
+        // Update the state to reflect the form submission
+        setFormSubmitted(true);
+      }
+    }
+
+    if(isFormSubmitted){
+        return (
+            <div>
+                <Navbar />
+                <div className={styles.container}>
+                    <div className={styles.form}>
+                        <h1>Validation card</h1>
+                        <form>
+                        <h1>Credit Card is already filled out</h1>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+        
+    }
+    else
     return (
         <div>
             <Navbar />
@@ -63,8 +118,10 @@ export const Card = () => {
                         <input type="number" className={styles['form-input']} placeholder='Enter amount' value={amount} onChange={(e) => setAmount(e.target.value)} />
                         <br />
                         <button className={styles.button} onClick={(e) => {
+                            
                             e.preventDefault();
                             handleSubmitClick();
+                            handleFormSubmit();
                         }}>Submit</button>
                         {errorMessage && <p style={{ color: 'red', textAlign: 'center', marginBottom: 20 }} > {errorMessage}</p>}
                     </form>
