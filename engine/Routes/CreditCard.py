@@ -1,7 +1,6 @@
 from Configuration.config import *
 from flask_restful import Resource
 from Models.__init__ import CreditCard, CreditCardSchema, User, Balance
-from flask import request
 
 
 cardArgs = reqparse.RequestParser()
@@ -12,8 +11,30 @@ cardArgs.add_argument("amount", type=float, help="Amount in RSD is required", re
 cardArgs.add_argument("userName", type=str, help="Name and surname are required", required=True)
 
 
-# Adding credit card (verifying the account)
+# GET - Info about credit card
+# POST - Adding credit card (verifying the account)
 class Card(Resource):
+    def get(self, token):
+        try:
+            if token not in activeTokens.keys():
+                return "Please login to continue.", 400
+            email = activeTokens[token]
+
+            # Get info on currently logged in account
+            account = db.session.execute(db.select(User).filter_by(email=email)).one_or_none()
+
+            # Find the credit card
+            card = db.session.execute(db.select(CreditCard).filter_by(cardNumber=account[0].cardNumber)).one_or_none()
+            if card is None:
+                return "Card not found", 400
+
+            card_schema = CreditCardSchema()
+            result = card_schema.dump(card[0])
+            return make_response(jsonify(result), 200)
+
+        except Exception as e:
+            return "Error: " + str(e), 400
+
     def post(self, token):
         args = cardArgs.parse_args()
         card_number = args['cardNumber']
@@ -56,12 +77,11 @@ api.add_resource(Card, "/card/<string:token>")
 verifyCardArgs = reqparse.RequestParser()
 verifyCardArgs.add_argument("cardNumber", type=str, help="Card Number is required", required=True)
 
+
 class VerifyCard(Resource):
     def post(self):
-        #args = verifyCardArgs.parse_args()
-        data = request.get_json()
-        card_number = data['cardNumber']
-        print("vc", card_number)
+        args = verifyCardArgs.parse_args()
+        card_number = args['cardNumber']
 
         try:
             # Get info on credit card
@@ -102,29 +122,3 @@ class VerifyCard(Resource):
 
 
 api.add_resource(VerifyCard, "/verifyCard")
-
-"""
-
-class VerifiedCard(Resource):
-    def get(self, token):
-        try:
-            if token not in activeTokens.keys():
-                return "Please login to continue.", 400
-            email = activeTokens[token]
-            # Get info on credit card
-            card = db.session.execute(db.select(CreditCard).filter_by(email=email, verified=True)).one_or_none()
-
-            if card is None:
-                return jsonify(message="Card not verified"), 200
-
-            cards_schema = CreditCardSchema()
-            result = cards_schema.dump(card[0])
-
-            return make_response(jsonify(result), 200)
-
-        except Exception as e:
-            return "Error: " + str(e), 400
-
-
-api.add_resource(VerifyCard, "/getUserCard/<string:token>")
-"""

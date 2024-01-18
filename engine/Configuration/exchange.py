@@ -4,8 +4,10 @@ import datetime
 import urllib.request
 import os
 import time
-# File with exchange rates (WINDOWS PATH)
 
+
+# File with exchange rates (WINDOWS PATH)
+#path = ".\\Configuration\\results.json"
 path = ".\\results.json"
 
 # File with exchange rates (UNIX PATH)
@@ -19,60 +21,46 @@ def getRatesFromAPI():
     return json.loads(data)["rates"]
 
 
-"""
-def getRatesFromAPI():
-    url = 'http://api.exchangeratesapi.io/v1/latest?access_key=57d102e76d357aaaab5dba8955ffa5a8'
-
-    max_retries = 5  # Maximum number of retries
-    delay_seconds = 1  # Initial delay in seconds
-
-    for retry in range(max_retries):
-        try:
-            # Add a delay before making the request
-            time.sleep(delay_seconds)
-
-            data = urllib.request.urlopen(url).read()
-            return json.loads(data)["rates"]
-        except Exception as e:
-            # Handle exceptions (e.g., HTTP 429)
-            print(f"Error: {str(e)}", sys.stderr)
-
-            # Increase the delay for the next retry (exponential backoff)
-            delay_seconds *= 2
-        print('a')
-    # If all retries fail, return an empty dictionary or handle it as needed
-    return {}
-"""
-
-
 def getDataToSave():
-    with open(path, "w") as file:
+    with open(path, "w+") as file:
         date = datetime.datetime.now().strftime("%d/%m/%Y")
         rates = getRatesFromAPI()
         file.write(json.dumps({"date": date, "rates": rates}))
     return rates
 
 
+"""
+# Preterali smo sa API-jem haahhaha
+def getRates():
+    text = ""
+    with open(path, "w+") as file:
+        text = file.read()
+
+    try:
+        if (text == ""):
+            return getDataToSave()
+
+        data = json.loads(text)
+        if (["date", "rates"] not in data.keys()):
+            return getDataToSave()
+
+        if (data["date"] != datetime.datetime.now().strftime("%d/%m/%Y")):
+            return getDataToSave()
+
+        return data["rates"]
+    except Exception as e:
+        print(str(e), sys.stderr)
+        return getDataToSave()
+"""
+
+
+# Quick-fix
 def getRates():
     text = ""
     with open(path, "r") as file:
         text = file.read()
-
-    #try:
-        #if (text == ""):
-            #return getDataToSave()
-
         data = json.loads(text)
-        #if (["date", "rates"] not in data.keys()):
-            #return getDataToSave()
-
-        #if (data["date"] != datetime.datetime.now().strftime("%d/%m/%Y")):
-            #return getDataToSave()
-
-        return data["rates"]
-    #except Exception as e:
-        #print(str(e), sys.stderr)
-        #return getDataToSave()
+    return data["rates"]
 
 
 def exchangeMoney(value, currency1, currency2):
