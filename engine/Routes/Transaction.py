@@ -59,7 +59,8 @@ class TransactionData(Resource):
             transaction = Transaction(sender_email, receiver_email, amount, currency, state, product_id)
 
             # Product amount
-            temp = db.session.execute(db.select(Product).filter_by(id=transaction.product)).one_or_none()
+            temp = db.session.execute(db.select(Product).filter_by(id=transaction.product)).first()
+            print(temp)
             if temp is None:
                 raise Exception("")
             prod = temp[0]

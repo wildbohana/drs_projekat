@@ -17,6 +17,7 @@ import { TransactionHistory } from './Components/TransactionHistory';
 import { Card } from './Components/Card';
 import { Account } from './Components/Account';
 import { Balance } from './Components/Balance';
+import { AddBalance } from './Components/AddBalance'
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/card" element={<Card />} />
         <Route path="/account" element={<Account />} />
         <Route path="/balance" element={<Balance />} />
+        <Route path='/addBalance' element={<AddBalance />} />
       </Routes>
     </Router>
   )

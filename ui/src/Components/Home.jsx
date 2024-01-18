@@ -68,6 +68,7 @@ export const Home = () => {
 
     const handleCheckboxChange = (productId) => {
         setSelectedProductId(productId);
+        
     };
 
     const handleAmountChange = async (productId, newAmount) => {
@@ -91,18 +92,19 @@ export const Home = () => {
         
         const selectedProduct = products.find(product => product.id === selectedProductId);
         if (selectedProduct) {
-            const { currency } = selectedProduct;       
-            const amount = "1";
+            const  currency  = selectedProduct.currency;       
+            const amount = 1.0;
             
             console.log(amount);
-            console.log(currency);
             
-            const response = await axios.post(`/transaction/${token}`, {
-                product: selectedProductId,
+            
+            const response = await axios.post(`/transaction/${token}`, {                
                 amount,
-                currency
+                currency,
+                product: selectedProductId,
             });
 
+            
             const successMessage = response.data;
             console.log(successMessage);
 

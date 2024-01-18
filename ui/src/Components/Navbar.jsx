@@ -66,6 +66,9 @@ export const Navbar = () => {
                     <li>
                         <a href="/balance">Balance</a>
                     </li>
+                    <li>
+                    <a href="/addBalance">Add Balance</a>
+                    </li>
                      
                 </ul>
             </nav>
